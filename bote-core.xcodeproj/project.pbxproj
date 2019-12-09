@@ -3,11 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		50972BBD239F0A54005C1BBD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BBC239F0A54005C1BBD /* main.swift */; };
+		50972BC4239F0A68005C1BBD /* LocalFileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BC3239F0A68005C1BBD /* LocalFileWatcher.swift */; };
+		50972BC6239F0A72005C1BBD /* LocalFileWatcherSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BC5239F0A72005C1BBD /* LocalFileWatcherSubscription.swift */; };
+		50972BC9239F0A8A005C1BBD /* FileEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BC8239F0A8A005C1BBD /* FileEvent.swift */; };
+		50972BCD239F0AB2005C1BBD /* DirectoryCrawler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BCC239F0AB2005C1BBD /* DirectoryCrawler.swift */; };
+		50972BD0239F0AE5005C1BBD /* EonilFSEvents in Frameworks */ = {isa = PBXBuildFile; productRef = 50972BCF239F0AE5005C1BBD /* EonilFSEvents */; };
+		50972BDA239F0C9E005C1BBD /* bote_core_tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BD9239F0C9E005C1BBD /* bote_core_tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,10 +31,25 @@
 /* Begin PBXFileReference section */
 		50972BB9239F0A54005C1BBD /* bote-core */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "bote-core"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50972BBC239F0A54005C1BBD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		50972BC3239F0A68005C1BBD /* LocalFileWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileWatcher.swift; sourceTree = "<group>"; };
+		50972BC5239F0A72005C1BBD /* LocalFileWatcherSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileWatcherSubscription.swift; sourceTree = "<group>"; };
+		50972BC8239F0A8A005C1BBD /* FileEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileEvent.swift; sourceTree = "<group>"; };
+		50972BCC239F0AB2005C1BBD /* DirectoryCrawler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryCrawler.swift; sourceTree = "<group>"; };
+		50972BD7239F0C9E005C1BBD /* bote-core-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bote-core-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50972BD9239F0C9E005C1BBD /* bote_core_tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bote_core_tests.swift; sourceTree = "<group>"; };
+		50972BDB239F0C9E005C1BBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		50972BB6239F0A54005C1BBD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50972BD0239F0AE5005C1BBD /* EonilFSEvents in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50972BD4239F0C9E005C1BBD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -42,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				50972BBB239F0A54005C1BBD /* bote-core */,
+				50972BD8239F0C9E005C1BBD /* bote-core-tests */,
 				50972BBA239F0A54005C1BBD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				50972BB9239F0A54005C1BBD /* bote-core */,
+				50972BD7239F0C9E005C1BBD /* bote-core-tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,8 +81,45 @@
 			isa = PBXGroup;
 			children = (
 				50972BBC239F0A54005C1BBD /* main.swift */,
+				50972BC7239F0A77005C1BBD /* File Watcher */,
+				50972BCA239F0A8D005C1BBD /* Model */,
 			);
 			path = "bote-core";
+			sourceTree = "<group>";
+		};
+		50972BC7239F0A77005C1BBD /* File Watcher */ = {
+			isa = PBXGroup;
+			children = (
+				50972BCB239F0AA4005C1BBD /* Helpers */,
+				50972BC3239F0A68005C1BBD /* LocalFileWatcher.swift */,
+				50972BC5239F0A72005C1BBD /* LocalFileWatcherSubscription.swift */,
+			);
+			path = "File Watcher";
+			sourceTree = "<group>";
+		};
+		50972BCA239F0A8D005C1BBD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				50972BC8239F0A8A005C1BBD /* FileEvent.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		50972BCB239F0AA4005C1BBD /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				50972BCC239F0AB2005C1BBD /* DirectoryCrawler.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		50972BD8239F0C9E005C1BBD /* bote-core-tests */ = {
+			isa = PBXGroup;
+			children = (
+				50972BD9239F0C9E005C1BBD /* bote_core_tests.swift */,
+				50972BDB239F0C9E005C1BBD /* Info.plist */,
+			);
+			path = "bote-core-tests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,9 +138,29 @@
 			dependencies = (
 			);
 			name = "bote-core";
+			packageProductDependencies = (
+				50972BCF239F0AE5005C1BBD /* EonilFSEvents */,
+			);
 			productName = "bote-core";
 			productReference = 50972BB9239F0A54005C1BBD /* bote-core */;
 			productType = "com.apple.product-type.tool";
+		};
+		50972BD6239F0C9E005C1BBD /* bote-core-tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50972BDC239F0C9E005C1BBD /* Build configuration list for PBXNativeTarget "bote-core-tests" */;
+			buildPhases = (
+				50972BD3239F0C9E005C1BBD /* Sources */,
+				50972BD4239F0C9E005C1BBD /* Frameworks */,
+				50972BD5239F0C9E005C1BBD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "bote-core-tests";
+			productName = "bote-core-tests";
+			productReference = 50972BD7239F0C9E005C1BBD /* bote-core-tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -95,6 +175,9 @@
 					50972BB8239F0A54005C1BBD = {
 						CreatedOnToolsVersion = 11.1;
 					};
+					50972BD6239F0C9E005C1BBD = {
+						CreatedOnToolsVersion = 11.1;
+					};
 				};
 			};
 			buildConfigurationList = 50972BB4239F0A54005C1BBD /* Build configuration list for PBXProject "bote-core" */;
@@ -106,21 +189,47 @@
 				Base,
 			);
 			mainGroup = 50972BB0239F0A54005C1BBD;
+			packageReferences = (
+				50972BCE239F0AE5005C1BBD /* XCRemoteSwiftPackageReference "FSEvents" */,
+			);
 			productRefGroup = 50972BBA239F0A54005C1BBD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				50972BB8239F0A54005C1BBD /* bote-core */,
+				50972BD6239F0C9E005C1BBD /* bote-core-tests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		50972BD5239F0C9E005C1BBD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		50972BB5239F0A54005C1BBD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50972BC9239F0A8A005C1BBD /* FileEvent.swift in Sources */,
+				50972BC4239F0A68005C1BBD /* LocalFileWatcher.swift in Sources */,
 				50972BBD239F0A54005C1BBD /* main.swift in Sources */,
+				50972BCD239F0AB2005C1BBD /* DirectoryCrawler.swift in Sources */,
+				50972BC6239F0A72005C1BBD /* LocalFileWatcherSubscription.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50972BD3239F0C9E005C1BBD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50972BDA239F0C9E005C1BBD /* bote_core_tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +371,42 @@
 			};
 			name = Release;
 		};
+		50972BDD239F0C9E005C1BBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = NL97TS4Q9A;
+				INFOPLIST_FILE = "bote-core-tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "de.pascalbraband.bote-core-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		50972BDE239F0C9E005C1BBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = NL97TS4Q9A;
+				INFOPLIST_FILE = "bote-core-tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "de.pascalbraband.bote-core-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -283,7 +428,35 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		50972BDC239F0C9E005C1BBD /* Build configuration list for PBXNativeTarget "bote-core-tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50972BDD239F0C9E005C1BBD /* Debug */,
+				50972BDE239F0C9E005C1BBD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		50972BCE239F0AE5005C1BBD /* XCRemoteSwiftPackageReference "FSEvents" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/eonil/FSEvents.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		50972BCF239F0AE5005C1BBD /* EonilFSEvents */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50972BCE239F0AE5005C1BBD /* XCRemoteSwiftPackageReference "FSEvents" */;
+			productName = EonilFSEvents;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 50972BB1239F0A54005C1BBD /* Project object */;
 }
