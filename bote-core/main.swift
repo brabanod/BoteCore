@@ -8,5 +8,20 @@
 
 import Foundation
 
-print("Hello, World!")
+
+let watchPath = "\(NSHomeDirectory())/Desktop/watchDir"
+
+let watchSubscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
+    switch completion {
+    case .finished:
+        print("Finished watching")
+    case .failure(let error):
+        print("Error watching: \(error)")
+    }
+}) { (event) in
+    print(event)
+}
+
+
+RunLoop.main.run()
 
