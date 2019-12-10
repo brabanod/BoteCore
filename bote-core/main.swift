@@ -11,6 +11,7 @@ import Foundation
 
 let watchPath = "\(NSHomeDirectory())/Desktop/watchDir"
 
+
 let watchSubscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
     switch completion {
     case .finished:
@@ -21,6 +22,8 @@ let watchSubscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCo
 }) { (event) in
     print(event)
 }
+
+//FileManager.default.createFile(atPath: watchPath+"/myfile.txt", contents: "hello".data(using: .utf8), attributes: nil)
 
 
 RunLoop.main.run()
