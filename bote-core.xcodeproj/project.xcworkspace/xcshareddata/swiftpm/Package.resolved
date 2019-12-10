@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "EonilFSEvents",
+        "repositoryURL": "https://github.com/eonil/FSEvents.git",
+        "state": {
+          "branch": null,
+          "revision": "579c7bfd4a0b14e51f8a364bba838c0fd5e3717c",
+          "version": "0.1.5"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
