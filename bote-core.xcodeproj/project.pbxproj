@@ -125,7 +125,6 @@
 				505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */,
 				50972BC7239F0A77005C1BBD /* File Watcher */,
 				505902B8239FBC6000FB6DB2 /* Configuration */,
-				50972BCA239F0A8D005C1BBD /* Model */,
 			);
 			path = "bote-core";
 			sourceTree = "<group>";
@@ -141,17 +140,10 @@
 			path = "File Watcher";
 			sourceTree = "<group>";
 		};
-		50972BCA239F0A8D005C1BBD /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				50972BC8239F0A8A005C1BBD /* FileEvent.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		50972BCB239F0AA4005C1BBD /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				50972BC8239F0A8A005C1BBD /* FileEvent.swift */,
 				50972BCC239F0AB2005C1BBD /* DirectoryCrawler.swift */,
 			);
 			path = Helpers;

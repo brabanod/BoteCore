@@ -39,8 +39,9 @@ class LocalFileWatcherTests: XCTestCase {
         }) { (event: FileEvent) in
             print("##### EVENT: \(event)")
             if case .createdFile(path: let path) = event {
-                XCTAssertEqual(filepath, path)
-                expectation.fulfill()
+                if path == filepath {
+                    expectation.fulfill()
+                }
             }
         }
         
@@ -62,9 +63,11 @@ class LocalFileWatcherTests: XCTestCase {
                 XCTFail("Publisher unexpectedly failed. \(error)")
             }
         }) { (event: FileEvent) in
+            print("RRRR EVENT: \(event)")
             if case .removedFile(path: let path) = event {
-                XCTAssertEqual(filepath, path)
-                expectation.fulfill()
+                if path == filepath {
+                    expectation.fulfill()
+                }
             } else {
                 XCTFail("Event was of type \(event.self)")
             }
@@ -158,5 +161,14 @@ class LocalFileWatcherTests: XCTestCase {
         } catch let error {
             XCTFail("Unexpectedly failed while removing test directory. \(error)")
         }
+    }
+    
+    
+    func shell(_ args: String...) {
+        let task = Process()
+        task.launchPath = watchPath
+        task.arguments = args
+        task.launch()
+        task.waitUntilExit()
     }
 }

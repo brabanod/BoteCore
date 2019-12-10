@@ -155,21 +155,21 @@ final class LocalFileWatcherSubscription<SubscriberType: Subscriber>: Subscripti
                 }
             }
                 
-            // Item CREATED or MODIFIED
-            else if flags.contains(.itemCreated) || flags.contains(.itemModified) {
-                if isDir(flags: flags) {
-                    completion(.createdDir(path: filepath))
-                } else {
-                    completion(.createdFile(path: filepath))
-                }
-            }
-                
             // Item REMOVED
             else if flags.contains(.itemRemoved) {
                 if isDir(flags: flags) {
                     completion(.removedDir(path: filepath))
                 } else {
                     completion(.removedFile(path: filepath))
+                }
+            }
+                
+            // Item CREATED or MODIFIED
+            else if flags.contains(.itemCreated) || flags.contains(.itemModified) {
+                if isDir(flags: flags) {
+                    completion(.createdDir(path: filepath))
+                } else {
+                    completion(.createdFile(path: filepath))
                 }
             }
         }
