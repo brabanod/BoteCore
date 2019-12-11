@@ -33,6 +33,7 @@
 		50FF976B23A15AC3007DF0FE /* DirectoryCrawlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */; };
 		50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
 		50FF977123A16368007DF0FE /* Shout in Frameworks */ = {isa = PBXBuildFile; productRef = 50FF977023A16368007DF0FE /* Shout */; };
+		50FF978A23A1A8F3007DF0FE /* KeychainGuard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF978923A1A8F3007DF0FE /* KeychainGuard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -65,6 +66,7 @@
 		50FF976823A15913007DF0FE /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
 		50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryCrawlerTests.swift; sourceTree = "<group>"; };
 		50FF976D23A160A5007DF0FE /* SyncHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncHandler.swift; sourceTree = "<group>"; };
+		50FF978923A1A8F3007DF0FE /* KeychainGuard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainGuard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 				50FF976C23A16085007DF0FE /* Sync Handler */,
 				50972BC7239F0A77005C1BBD /* File Watcher */,
 				505902B8239FBC6000FB6DB2 /* Configuration */,
+				50FF978823A1A8DE007DF0FE /* Helpers */,
 			);
 			path = "bote-core";
 			sourceTree = "<group>";
@@ -173,6 +176,14 @@
 				50FF976D23A160A5007DF0FE /* SyncHandler.swift */,
 			);
 			path = "Sync Handler";
+			sourceTree = "<group>";
+		};
+		50FF978823A1A8DE007DF0FE /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				50FF978923A1A8F3007DF0FE /* KeychainGuard.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,6 +291,7 @@
 				505902C1239FBFC400FB6DB2 /* FileWatcher.swift in Sources */,
 				50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */,
 				50972BC9239F0A8A005C1BBD /* FileEvent.swift in Sources */,
+				50FF978A23A1A8F3007DF0FE /* KeychainGuard.swift in Sources */,
 				50972BC4239F0A68005C1BBD /* LocalFileWatcher.swift in Sources */,
 				50972BBD239F0A54005C1BBD /* main.swift in Sources */,
 				50972BCD239F0AB2005C1BBD /* DirectoryCrawler.swift in Sources */,
