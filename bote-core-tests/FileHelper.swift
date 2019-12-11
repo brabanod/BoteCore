@@ -69,6 +69,6 @@ func safetyNet(path: String..., completion: () -> ()) {
     if path.allSatisfy({ $0.hasPrefix(testsBasepath) }) {
         completion()
     } else {
-        fatalError("Operating on unauthorized path.")
+        fatalError("Operating on unauthorized path: \(path).")
     }
 }
