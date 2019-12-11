@@ -11,7 +11,6 @@ import Combine
 
 class LocalFileWatcherTests: XCTestCase {
     
-    let filemanager = FileManager.default
     let watchPath = "/private/tmp/bote-core-tests"
     //let watchPath = "/Users/pascal/Desktop/watchDir"
     var subscriber: AnyCancellable?
@@ -25,17 +24,14 @@ class LocalFileWatcherTests: XCTestCase {
         subscriber?.cancel()
     }
 
+    
+    // Tests, if creating a file is registered correctly
     func testCreatedFile() {
         let filepath = watchPath + "/created_file_test"
         let expectation = XCTestExpectation(description: "Register \(FileEvent.createdFile(path: filepath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            switch completion {
-            case .finished:
-                XCTFail("Publisher unexpectedly finished.")
-            case .failure(let error):
-                XCTFail("Publisher unexpectedly failed. \(error)")
-            }
+            self.checkComplition(completion: completion)
         }) { (event: FileEvent) in
             print("##### EVENT: \(event)")
             if case .createdFile(path: let path) = event {
@@ -50,18 +46,15 @@ class LocalFileWatcherTests: XCTestCase {
     }
     
     
+    // Tests, if removing a file is registered correctly
     func testRemovedFile() {
         let filepath = watchPath + "/removed_file_test"
+        createFile(at: filepath)
+        
         let expectation = XCTestExpectation(description: "Register \(FileEvent.removedFile(path: filepath).self)")
         
-        createFile(at: filepath)
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            switch completion {
-            case .finished:
-                XCTFail("Publisher unexpectedly finished.")
-            case .failure(let error):
-                XCTFail("Publisher unexpectedly failed. \(error)")
-            }
+            self.checkComplition(completion: completion)
         }) { (event: FileEvent) in
             print("RRRR EVENT: \(event)")
             if case .removedFile(path: let path) = event {
@@ -78,16 +71,13 @@ class LocalFileWatcherTests: XCTestCase {
     }
     
     
+    // Tests, if creating a directory is registered correctly
     func testCreatedDirectory() {
         let dirpath = watchPath + "/created_dir_test"
         let expectation = XCTestExpectation(description: "Register \(FileEvent.createdDir(path: dirpath).self)")
+        
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            switch completion {
-            case .finished:
-                XCTFail("Publisher unexpectedly finished.")
-            case .failure(let error):
-                XCTFail("Publisher unexpectedly failed. \(error)")
-            }
+            self.checkComplition(completion: completion)
         }) { (event: FileEvent) in
             if case .createdDir(path: let path) = event {
                 XCTAssertEqual(dirpath, path)
@@ -102,18 +92,15 @@ class LocalFileWatcherTests: XCTestCase {
     }
 
     
+    // Tests, if removing a directory is registered correctly
     func testRemovedDirectory() {
         let dirpath = watchPath + "/removed_dir_test"
+        createDir(at: dirpath)
+        
         let expectation = XCTestExpectation(description: "Register \(FileEvent.removedDir(path: dirpath).self)")
         
-        createDir(at: dirpath)
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            switch completion {
-            case .finished:
-                XCTFail("Publisher unexpectedly finished.")
-            case .failure(let error):
-                XCTFail("Publisher unexpectedly failed. \(error)")
-            }
+            self.checkComplition(completion: completion)
         }) { (event: FileEvent) in
             if case .removedDir(path: let path) = event {
                 XCTAssertEqual(dirpath, path)
@@ -128,47 +115,247 @@ class LocalFileWatcherTests: XCTestCase {
     }
     
     
+    // Tests, if renaming a file is registered correctly
+    func testRenamedFile() {
+        let srcFilepath = watchPath + "/rename_test_A"
+        let dstFilepath = watchPath + "/rename_test_B"
+        createFile(at: srcFilepath)
+        
+        let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
+        
+        subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
+            self.checkComplition(completion: completion)
+        }) { (event: FileEvent) in
+            if case .renamed(src: let from, dst: let to) = event {
+                XCTAssertEqual(from, srcFilepath)
+                XCTAssertEqual(to, dstFilepath)
+                expectation.fulfill()
+            } else {
+                XCTFail("Event was of type \(event.self)")
+            }
+        }
+        
+        moveItem(from: srcFilepath, to: dstFilepath)
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
+    // Tests, if moving a file inside the watched folder is registered correctly
+    func testMoveFileInsideWatchedFolder() {
+        // Create subdir
+        let watchPathSub = watchPath + "/move_test"
+        createDir(at: watchPathSub)
+        
+        let srcFilepath = watchPath + "/move_test_file"
+        let dstFilepath = watchPathSub + "/move_test_file"
+        
+        createFile(at: srcFilepath)
+        
+        let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
+        
+        subscriber = LocalFileWatcher.init(watchPath: watchPathSub).sink(receiveCompletion: { (completion) in
+            self.checkComplition(completion: completion)
+        }) { (event: FileEvent) in
+            if case .createdFile(path: let path) = event {
+                XCTAssertEqual(path, dstFilepath)
+                expectation.fulfill()
+            } else {
+                XCTFail("Event was of type \(event.self)")
+            }
+        }
+        
+        moveItem(from: srcFilepath, to: dstFilepath)
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
+    // Tests, if moving a directory inside the watched folder is registered correctly
+    // Also tests if all files inside the folder are registered correctly (DirectoryCrawler)
+    func testMoveDirectoryInsideWatchedFolder() {
+        // Create subdir
+        let watchPathSub = watchPath + "/move_test"
+        createDir(at: watchPathSub)
+        
+        let srcFilepath = watchPath + "/move_test_dir"
+        let dstFilepath = watchPathSub + "/move_test_dir"
+        
+        let fileA = "/a.txt"
+        let fileB = "/b.txt"
+        let fileC = "/c.txt"
+        
+        createDir(at: srcFilepath)
+        createFile(at: srcFilepath + fileA)
+        createFile(at: srcFilepath + fileB)
+        createFile(at: srcFilepath + fileC)
+        
+        let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
+        
+        var registeredEvents: [FileEvent] = []
+        subscriber = LocalFileWatcher.init(watchPath: watchPathSub).sink(receiveCompletion: { (completion) in
+            self.checkComplition(completion: completion)
+        }) { (event: FileEvent) in
+            registeredEvents.append(event)
+        }
+        
+        moveItem(from: srcFilepath, to: dstFilepath)
+        print("EVENTS: \(registeredEvents)")
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
+            if registeredEvents.contains(FileEvent.createdDir(path: dstFilepath))
+                && registeredEvents.contains(FileEvent.createdFile(path: dstFilepath + fileA))
+                && registeredEvents.contains(FileEvent.createdFile(path: dstFilepath + fileB))
+                && registeredEvents.contains(FileEvent.createdFile(path: dstFilepath + fileC)) {
+                expectation.fulfill()
+            }
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
+    // Tests, if moving a file outside the watched folder is registered correctly
+    func testMoveFileOutsideWatchedFolder() {
+        // Create subdir
+        let watchPathSub = watchPath + "/move_test"
+        createDir(at: watchPathSub)
+        
+        let srcFilepath = watchPathSub + "/move_test_file"
+        let dstFilepath = watchPath + "/move_test_file"
+        createFile(at: srcFilepath)
+        
+        let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
+        
+        subscriber = LocalFileWatcher.init(watchPath: watchPathSub).sink(receiveCompletion: { (completion) in
+            self.checkComplition(completion: completion)
+        }) { (event: FileEvent) in
+            if case .removedFile(path: let path) = event {
+                XCTAssertEqual(path, srcFilepath)
+                expectation.fulfill()
+            } else {
+                XCTFail("Event was of type \(event.self)")
+            }
+        }
+        
+        moveItem(from: srcFilepath, to: dstFilepath)
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
+    // Tests, if moving a directory outside the watched folder is registered correctly
+    func testMoveDirectoryOutsideWatchedFolder() {
+        // Create subdir
+        let watchPathSub = watchPath + "/move_test"
+        createDir(at: watchPathSub)
+        
+        let srcFilepath = watchPathSub + "/move_test_dir"
+        let dstFilepath = watchPath + "/move_test_dir"
+        createDir(at: srcFilepath)
+        
+        let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
+        
+        subscriber = LocalFileWatcher.init(watchPath: watchPathSub).sink(receiveCompletion: { (completion) in
+            self.checkComplition(completion: completion)
+        }) { (event: FileEvent) in
+            if case .removedDir(path: let path) = event {
+                XCTAssertEqual(path, srcFilepath)
+                expectation.fulfill()
+            } else {
+                XCTFail("Event was of type \(event.self)")
+            }
+        }
+        
+        moveItem(from: srcFilepath, to: dstFilepath)
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
+    
+    
+    // MARK: - Common
+    func checkComplition(completion: Subscribers.Completion<LocalFileWatcher.Failure>) {
+        switch completion {
+        case .finished:
+            XCTFail("Publisher unexpectedly finished.")
+        case .failure(let error):
+            XCTFail("Publisher unexpectedly failed. \(error)")
+        }
+    }
+    
+    
     
     
     // MARK: - File Managment
     
     func createFile(at path: String) {
-        filemanager.createFile(atPath: path, contents: nil, attributes: nil)
+        safetyNet(path: path) {
+            shell("touch \(path)")
+        }
     }
     
     
     func removeFile(at path: String) {
-        do {
-            try filemanager.removeItem(atPath: path)
-        } catch let error {
-            XCTFail("Unexpectedly failed while removing test directory. \(error)")
+        safetyNet(path: path) {
+            shell("rm \(path)")
         }
     }
     
     
     func createDir(at path: String) {
-        do {
-            try filemanager.createDirectory(atPath: path, withIntermediateDirectories: false, attributes: nil)
-        } catch let error {
-            XCTFail("Unexpectedly failed while creating test directory. \(error)")
+        safetyNet(path: path) {
+            shell("mkdir \(path)")
         }
     }
     
     
     func removeDir(at path: String) {
-        do {
-            try filemanager.removeItem(atPath: path)
-        } catch let error {
-            XCTFail("Unexpectedly failed while removing test directory. \(error)")
+        safetyNet(path: path) {
+            shell("rm -rf \(path)")
+        }
+        
+    }
+    
+    
+    func moveItem(from src: String, to dst: String) {
+        safetyNet(path: src, dst) {
+            shell("mv \(src) \(dst)")
         }
     }
     
     
-    func shell(_ args: String...) {
+    @discardableResult
+    func shell(_ command: String) -> String {
+        print("###CMD \(command)")
         let task = Process()
-        task.launchPath = watchPath
-        task.arguments = args
+        task.launchPath = "/bin/zsh"
+        task.arguments = ["-c", command]
+
+        let pipe = Pipe()
+        task.standardOutput = pipe
         task.launch()
-        task.waitUntilExit()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output: String = NSString(data: data, encoding: String.Encoding.utf8.rawValue)! as String
+
+        return output
     }
+    
+    
+    func safetyNet(path: String..., completion: () -> ()) {
+        // Should prevent accidently operating on wrong path in file system
+        if path.allSatisfy({ $0.hasPrefix(watchPath) }) {
+            completion()
+        } else {
+            fatalError("Operating on unauthorized path.")
+        }
+    }
+    
+    
+    /*func SafetyNet() {
+        let allowedA = watchPath + "/testA"
+        let allowedB = watchPath + "/testB"
+        let forbiddenA = "/Users/pascal/"
+        let forbiddenB = "/Users/forbidden"
+        
+        safetyNet(path: allowedA, allowedB, forbiddenB) {
+            // Should produce fatal error
+        }
+    }*/
 }
