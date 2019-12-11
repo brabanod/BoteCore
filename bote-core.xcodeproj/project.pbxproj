@@ -31,6 +31,7 @@
 		50972BD0239F0AE5005C1BBD /* EonilFSEvents in Frameworks */ = {isa = PBXBuildFile; productRef = 50972BCF239F0AE5005C1BBD /* EonilFSEvents */; };
 		50FF976923A15913007DF0FE /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976823A15913007DF0FE /* FileHelper.swift */; };
 		50FF976B23A15AC3007DF0FE /* DirectoryCrawlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */; };
+		50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -62,6 +63,7 @@
 		50972BDB239F0C9E005C1BBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50FF976823A15913007DF0FE /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
 		50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryCrawlerTests.swift; sourceTree = "<group>"; };
+		50FF976D23A160A5007DF0FE /* SyncHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 			children = (
 				50972BBC239F0A54005C1BBD /* main.swift */,
 				505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */,
+				50FF976C23A16085007DF0FE /* Sync Handler */,
 				50972BC7239F0A77005C1BBD /* File Watcher */,
 				505902B8239FBC6000FB6DB2 /* Configuration */,
 			);
@@ -160,6 +163,14 @@
 				50972BDB239F0C9E005C1BBD /* Info.plist */,
 			);
 			path = "bote-core-tests";
+			sourceTree = "<group>";
+		};
+		50FF976C23A16085007DF0FE /* Sync Handler */ = {
+			isa = PBXGroup;
+			children = (
+				50FF976D23A160A5007DF0FE /* SyncHandler.swift */,
+			);
+			path = "Sync Handler";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -263,6 +274,7 @@
 				505902B4239FBBCC00FB6DB2 /* Configuration.swift in Sources */,
 				505902B7239FBC5A00FB6DB2 /* LocalConfiguration.swift in Sources */,
 				505902C1239FBFC400FB6DB2 /* FileWatcher.swift in Sources */,
+				50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */,
 				50972BC9239F0A8A005C1BBD /* FileEvent.swift in Sources */,
 				50972BC4239F0A68005C1BBD /* LocalFileWatcher.swift in Sources */,
 				50972BBD239F0A54005C1BBD /* main.swift in Sources */,
