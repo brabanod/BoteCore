@@ -66,7 +66,7 @@ final class LocalFileWatcherSubscription<SubscriberType: Subscriber>: Subscripti
     
     
     /**
-     Starts watching a directory on the file system
+     Starts watching a directory on the file system.
      
      - parameters:
         - eventHandler: Gets called, when an event on the watched directory happened. Receives a FileEvent.
@@ -86,7 +86,7 @@ final class LocalFileWatcherSubscription<SubscriberType: Subscriber>: Subscripti
     
     
     /**
-     Stops watching a directory on the file system
+     Stops watching a directory on the file system.
      */
     private func stopWatching() {
         EonilFSEvents.stopWatching(for: ObjectIdentifier(watchIdentifier))
@@ -94,7 +94,7 @@ final class LocalFileWatcherSubscription<SubscriberType: Subscriber>: Subscripti
     
     
     /**
-     Converts an file system event into a more usable FileEvent
+     Converts an file system event into a more usable FileEvent.
      
      - parameters:
         - event: The raw file system event
@@ -177,13 +177,13 @@ final class LocalFileWatcherSubscription<SubscriberType: Subscriber>: Subscripti
     
     
     /**
-     Checks whether the given flags indicate a file or directory
+     Checks whether the given flags indicate a file or directory.
      
      - returns:
-     A bollean value, indicating if item is a directory or not
+     A bollean value, indicating if item is a directory or not.
      
      - parameters:
-        - flags: The flags, which should be processed in the decission
+        - flags: The flags, which should be processed in the decission.
      */
     private func isDir(flags: EonilFSEventsEventFlags) -> Bool {
         if flags.contains(.itemIsDir) {
@@ -195,6 +195,13 @@ final class LocalFileWatcherSubscription<SubscriberType: Subscriber>: Subscripti
     }
     
     
+    /**
+     Crawls through a given directory and evaluates it's content.
+     
+     - parameters:
+        - path: The directory, thorugh which should be crawled.
+        - completion: The completion which gets called for every item that is found in the directory.
+     */
     private func crawl(path: String, completion: @escaping (FileEvent) -> ()) {
         for item in DirectoryCrawler.crawl(path: path) {
             let path = item.0
