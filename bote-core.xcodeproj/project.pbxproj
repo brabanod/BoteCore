@@ -30,6 +30,7 @@
 		50972BCD239F0AB2005C1BBD /* DirectoryCrawler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BCC239F0AB2005C1BBD /* DirectoryCrawler.swift */; };
 		50972BD0239F0AE5005C1BBD /* EonilFSEvents in Frameworks */ = {isa = PBXBuildFile; productRef = 50972BCF239F0AE5005C1BBD /* EonilFSEvents */; };
 		50972BDA239F0C9E005C1BBD /* bote_core_tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BD9239F0C9E005C1BBD /* bote_core_tests.swift */; };
+		50FF976923A15913007DF0FE /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976823A15913007DF0FE /* FileHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -60,6 +61,7 @@
 		50972BD7239F0C9E005C1BBD /* bote-core-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bote-core-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50972BD9239F0C9E005C1BBD /* bote_core_tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bote_core_tests.swift; sourceTree = "<group>"; };
 		50972BDB239F0C9E005C1BBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50FF976823A15913007DF0FE /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 			children = (
 				50972BD9239F0C9E005C1BBD /* bote_core_tests.swift */,
 				508FD7A6239F904500E29FD9 /* LocalFileWatcherTests.swift */,
+				50FF976823A15913007DF0FE /* FileHelper.swift */,
 				50972BDB239F0C9E005C1BBD /* Info.plist */,
 			);
 			path = "bote-core-tests";
@@ -278,6 +281,7 @@
 				508FD7A7239F904500E29FD9 /* LocalFileWatcherTests.swift in Sources */,
 				505902C2239FBFC400FB6DB2 /* FileWatcher.swift in Sources */,
 				505902B5239FBBCF00FB6DB2 /* Configuration.swift in Sources */,
+				50FF976923A15913007DF0FE /* FileHelper.swift in Sources */,
 				508FD7AB239F936D00E29FD9 /* DirectoryCrawler.swift in Sources */,
 				505902BF239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */,
 				508FD7A8239F935D00E29FD9 /* LocalFileWatcher.swift in Sources */,
