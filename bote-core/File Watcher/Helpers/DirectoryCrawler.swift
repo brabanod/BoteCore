@@ -13,11 +13,11 @@ class DirectoryCrawler {
     /**
      Crawls through a given directory and returns all files in it and it's subdirectories.
      
-     - returns:
-     A tuple `(String, Bool)`. The `String` indicates the item, the `Bool` indicates, whether item is direcotry.
-     
      - parameters:
         - path: The path, which should be crawled.
+        
+     - returns:
+     A tuple `(String, Bool)`. The `String` indicates the item, the `Bool` indicates, whether item is direcotry.
      */
     public static func crawl(path: String) -> [(String, Bool)] {
         var result = [(String, Bool)]()

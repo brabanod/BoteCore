@@ -179,11 +179,11 @@ final class LocalFileWatcherSubscription<SubscriberType: Subscriber>: Subscripti
     /**
      Checks whether the given flags indicate a file or directory.
      
-     - returns:
-     A bollean value, indicating if item is a directory or not.
-     
      - parameters:
         - flags: The flags, which should be processed in the decission.
+     
+     - returns:
+     A bollean value, indicating if item is a directory or not.
      */
     private func isDir(flags: EonilFSEventsEventFlags) -> Bool {
         if flags.contains(.itemIsDir) {
