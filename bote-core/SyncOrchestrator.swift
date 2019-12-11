@@ -27,10 +27,10 @@ class SyncOrchestrator {
     
     
     /**
-     Starts synchronization for a given configuration
+     Starts synchronization for a given configuration.
      
      - parameters:
-        - configuration: The configuration, for which a synchronization should be started
+        - configuration: The configuration, for which a synchronization should be started.
      */
     func startSynchronizing(with configuration: Configuration) {
         let localWatcher = LocalFileWatcher.init(watchPath: "path/")
