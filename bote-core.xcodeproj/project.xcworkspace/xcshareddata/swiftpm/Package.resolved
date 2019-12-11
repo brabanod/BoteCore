@@ -2,12 +2,39 @@
   "object": {
     "pins": [
       {
+        "package": "Socket",
+        "repositoryURL": "https://github.com/IBM-Swift/BlueSocket",
+        "state": {
+          "branch": null,
+          "revision": "c46a3d41f5b2401d18bcb46d0101cdc5cd13e307",
+          "version": "1.0.52"
+        }
+      },
+      {
+        "package": "CSSH",
+        "repositoryURL": "https://github.com/jakeheis/CSSH",
+        "state": {
+          "branch": null,
+          "revision": "579a20508ab598f78713a60fed95706efd06bbcb",
+          "version": "1.0.3"
+        }
+      },
+      {
         "package": "EonilFSEvents",
         "repositoryURL": "https://github.com/eonil/FSEvents.git",
         "state": {
           "branch": null,
           "revision": "579c7bfd4a0b14e51f8a364bba838c0fd5e3717c",
           "version": "0.1.5"
+        }
+      },
+      {
+        "package": "Shout",
+        "repositoryURL": "https://github.com/jakeheis/Shout.git",
+        "state": {
+          "branch": null,
+          "revision": "5a82442573426ec8f8a0d81232dcba9e6b3c6b34",
+          "version": "0.5.3"
         }
       }
     ]

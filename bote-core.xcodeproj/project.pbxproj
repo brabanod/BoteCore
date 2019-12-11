@@ -32,6 +32,7 @@
 		50FF976923A15913007DF0FE /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976823A15913007DF0FE /* FileHelper.swift */; };
 		50FF976B23A15AC3007DF0FE /* DirectoryCrawlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */; };
 		50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
+		50FF977123A16368007DF0FE /* Shout in Frameworks */ = {isa = PBXBuildFile; productRef = 50FF977023A16368007DF0FE /* Shout */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50FF977123A16368007DF0FE /* Shout in Frameworks */,
 				50972BD0239F0AE5005C1BBD /* EonilFSEvents in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -191,6 +193,7 @@
 			name = "bote-core";
 			packageProductDependencies = (
 				50972BCF239F0AE5005C1BBD /* EonilFSEvents */,
+				50FF977023A16368007DF0FE /* Shout */,
 			);
 			productName = "bote-core";
 			productReference = 50972BB9239F0A54005C1BBD /* bote-core */;
@@ -245,6 +248,7 @@
 			mainGroup = 50972BB0239F0A54005C1BBD;
 			packageReferences = (
 				50972BCE239F0AE5005C1BBD /* XCRemoteSwiftPackageReference "FSEvents" */,
+				50FF976F23A16368007DF0FE /* XCRemoteSwiftPackageReference "Shout" */,
 			);
 			productRefGroup = 50972BBA239F0A54005C1BBD /* Products */;
 			projectDirPath = "";
@@ -519,6 +523,14 @@
 				minimumVersion = 0.1.5;
 			};
 		};
+		50FF976F23A16368007DF0FE /* XCRemoteSwiftPackageReference "Shout" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jakeheis/Shout.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -531,6 +543,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50972BCE239F0AE5005C1BBD /* XCRemoteSwiftPackageReference "FSEvents" */;
 			productName = EonilFSEvents;
+		};
+		50FF977023A16368007DF0FE /* Shout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50FF976F23A16368007DF0FE /* XCRemoteSwiftPackageReference "Shout" */;
+			productName = Shout;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
