@@ -77,8 +77,9 @@ class LocalFileWatcherTests: XCTestCase {
             self.checkComplition(completion: completion)
         }) { (event: FileEvent) in
             if case .createdDir(path: let path) = event {
-                XCTAssertEqual(dirpath, path)
-                expectation.fulfill()
+                if dirpath == path {
+                    expectation.fulfill()
+                }
             } else {
                 XCTFail("Event was of type \(event.self)")
             }

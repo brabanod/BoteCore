@@ -8,8 +8,6 @@
 
 import Foundation
 
-let testsBasepath = "/private/tmp/bote-core-tests"
-
 
 func createFile(at path: String) {
     safetyNet(path: path) {

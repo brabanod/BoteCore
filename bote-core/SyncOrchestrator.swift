@@ -34,13 +34,17 @@ class SyncOrchestrator {
      */
     func startSynchronizing(with configuration: Configuration) {
         let localWatcher = LocalFileWatcher.init(watchPath: "path/")
+        // let remoteWatcher = RemoteFileWatcher.get(for: configuration, watchPath: "/") --> gives corresponding file watcher for protocol (e.g. SFTPFileWatcher instance)
         let watcher = FileWatcher.local(watcher: localWatcher)
-        //let syncHandler = SFTPSyncHandler()
+        //let syncHandler: SyncHandler = SyncHandlerOrganizer.get(for: configuration) --> gives corresponding sync handler for protocol (e.g. SFTPSyncHandler instance)
         configurations.append(SyncItem(configuration: configuration, fileWatcher: watcher))
         
         // Setup synchronizing with the given configuration
         // Setup FileWatcher for configuration.from
         // Setup SyncHandler for configuration.to
         // Save both in a data structure
+        
+        //let a = try SFTPConfiguration(path: "a", host: "s", port: nil, authentication: .key(path: "asd"), user: "pi", password: "")
+        //let path = a.authentication
     }
 }

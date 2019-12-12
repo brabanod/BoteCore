@@ -8,12 +8,17 @@
 
 import Foundation
 
-struct Configuration {
-    let from: ConnectionConfiguration
-    let to: ConnectionConfiguration
+struct Configuration: Codable {
+    //let from: ConnectionConfiguration
+    //let to: ConnectionConfiguration
+    let from: Int
+    let to: Int
 }
 
 
-protocol ConnectionConfiguration {
-    var path: String { get }
+protocol ConnectionConfiguration: Codable {
+    var path: String { get set }
 }
+
+
+// Each configuration has a unique ID
