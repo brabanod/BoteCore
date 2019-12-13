@@ -28,7 +28,7 @@ class SFTPConfigurationTests: XCTestCase {
     // MARK: - Initializers
 
     func testInitWithPassword() throws {
-        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
+        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
         
         // Check password
         XCTAssertEqual(SFTPServer.password, try conf.getPassword())
@@ -36,7 +36,7 @@ class SFTPConfigurationTests: XCTestCase {
         // Check other properties
         XCTAssertEqual(conf.path, testsBasepath)
         XCTAssertEqual(conf.host, SFTPServer.host)
-        XCTAssertEqual(conf.port, nil)
+        XCTAssertEqual(conf.port, SFTPServer.port)
         XCTAssertEqual(conf.user, SFTPServer.user)
         XCTAssertEqual(conf.authentication, SFTPAuthentication.password(value: SFTPServer.password))
     }
@@ -45,7 +45,7 @@ class SFTPConfigurationTests: XCTestCase {
     func testInitWithSavedPassword() throws {
         let savedPass = "saved_pass"
         try KeychainGuard.addItem(user: SFTPServer.user, password: savedPass, server: SFTPServer.host, type: "SFTP_Test")
-        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, user: SFTPServer.user)
+        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user)
         
         // Check password
         XCTAssertEqual(savedPass, try conf.getPassword())
@@ -53,7 +53,7 @@ class SFTPConfigurationTests: XCTestCase {
         // Check other properties
         XCTAssertEqual(conf.path, testsBasepath)
         XCTAssertEqual(conf.host, SFTPServer.host)
-        XCTAssertEqual(conf.port, nil)
+        XCTAssertEqual(conf.port, SFTPServer.port)
         XCTAssertEqual(conf.user, SFTPServer.user)
         XCTAssertEqual(conf.authentication, SFTPAuthentication.password(value: savedPass))
     }
@@ -62,7 +62,7 @@ class SFTPConfigurationTests: XCTestCase {
     func testWithSavedPasswordOverride() throws {
         let savedPass = "saved_pass"
         try KeychainGuard.addItem(user: SFTPServer.user, password: savedPass, server: SFTPServer.host, type: "SFTP_Test")
-        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
+        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
         
         // Check password
         XCTAssertEqual(SFTPServer.password, try conf.getPassword())
@@ -70,7 +70,7 @@ class SFTPConfigurationTests: XCTestCase {
         // Check other properties
         XCTAssertEqual(conf.path, testsBasepath)
         XCTAssertEqual(conf.host, SFTPServer.host)
-        XCTAssertEqual(conf.port, nil)
+        XCTAssertEqual(conf.port, SFTPServer.port)
         XCTAssertEqual(conf.user, SFTPServer.user)
         XCTAssertEqual(conf.authentication, SFTPAuthentication.password(value: SFTPServer.password))
     }
@@ -79,7 +79,7 @@ class SFTPConfigurationTests: XCTestCase {
     func testInitWithoutPassword() throws {
         // Should throw error
         do {
-            let _ = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, user: SFTPServer.user)
+            let _ = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user)
         } catch let error {
             guard let keychainError = error as? KeychainError else {
                 XCTFail("Error was not of type KeychainError.")
@@ -94,12 +94,12 @@ class SFTPConfigurationTests: XCTestCase {
     
     
     func testInitWithKey() throws {
-        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, authentication: .key(path: SFTPServer.keypath), user: SFTPServer.user)
+        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .key(path: SFTPServer.keypath), user: SFTPServer.user)
         
         // Check properties
         XCTAssertEqual(conf.path, testsBasepath)
         XCTAssertEqual(conf.host, SFTPServer.host)
-        XCTAssertEqual(conf.port, nil)
+        XCTAssertEqual(conf.port, SFTPServer.port)
         XCTAssertEqual(conf.user, SFTPServer.user)
         XCTAssertEqual(conf.authentication, SFTPAuthentication.key(path: SFTPServer.keypath))
     }
@@ -110,13 +110,13 @@ class SFTPConfigurationTests: XCTestCase {
     // MARK: - Getters
     
     func testGetPassword() throws {
-        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
+        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
         XCTAssertEqual(SFTPServer.password, try conf.getPassword())
     }
     
     
     func testGetKeyPath() throws {
-        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, authentication: .key(path: SFTPServer.keypath), user: SFTPServer.user)
+        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .key(path: SFTPServer.keypath), user: SFTPServer.user)
         XCTAssertEqual(SFTPServer.keypath, conf.getKeyPath())
     }
     
@@ -126,7 +126,7 @@ class SFTPConfigurationTests: XCTestCase {
     // MARK: - Setters
     
     func testSetAuthenticationNewPassword() throws {
-        var conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
+        var conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
         XCTAssertEqual(SFTPServer.password, try conf.getPassword())
         XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
         
@@ -139,7 +139,7 @@ class SFTPConfigurationTests: XCTestCase {
     
     
     func testSetUser() throws {
-        var conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
+        var conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
         XCTAssertEqual(SFTPServer.user, conf.user)
         XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
         
@@ -155,7 +155,7 @@ class SFTPConfigurationTests: XCTestCase {
     
     
     func testSetHost() throws {
-        var conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: nil, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
+        var conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
         XCTAssertEqual(SFTPServer.user, conf.user)
         XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
         
@@ -173,7 +173,41 @@ class SFTPConfigurationTests: XCTestCase {
     
     
     // MARK: - Encoding/Decoding
+    
+    func testEncodeDecodePassword() throws {
+        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .password(value: SFTPServer.password), user: SFTPServer.user)
+        
+        // Encode configuration
+        let encodedConf = try PropertyListEncoder().encode(conf)
+        //try encodedConf.write(to: URL(fileURLWithPath: "\(testsBasepath)/sftp_conf.plist"))
+        
+        // Decode configuration and check if all properties are set correct
+        let decodedConf = try PropertyListDecoder().decode(SFTPConfiguration.self, from: encodedConf)
+        XCTAssertEqual(decodedConf.path, testsBasepath)
+        XCTAssertEqual(decodedConf.host, SFTPServer.host)
+        XCTAssertEqual(decodedConf.port, SFTPServer.port)
+        XCTAssertEqual(decodedConf.user, SFTPServer.user)
+        XCTAssertEqual(decodedConf.authentication, SFTPAuthentication.password(value: ""))
+    }
+    
+    func testEncodingKeypath() throws {
+        let conf = try SFTPConfiguration(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, authentication: .key(path: SFTPServer.keypath), user: SFTPServer.user)
+        
+        // Encode configuration
+        let encodedConf = try PropertyListEncoder().encode(conf)
+        
+        // Decode configuration and check if all properties are set correct
+        let decodedConf = try PropertyListDecoder().decode(SFTPConfiguration.self, from: encodedConf)
+        XCTAssertEqual(decodedConf.path, testsBasepath)
+        XCTAssertEqual(decodedConf.host, SFTPServer.host)
+        XCTAssertEqual(decodedConf.port, SFTPServer.port)
+        XCTAssertEqual(decodedConf.user, SFTPServer.user)
+        XCTAssertEqual(decodedConf.authentication, SFTPAuthentication.key(path: SFTPServer.keypath))
+        
+    }
 
-    // FIXME: Finish test cases
+    // FIXME: Implement Encoding/Decoding tests
+    // Check, that all values are correctly stored and load
+    // Check, that password isn't stored in UserDefaults
 
 }

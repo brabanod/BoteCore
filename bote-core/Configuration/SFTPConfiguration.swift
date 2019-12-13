@@ -214,7 +214,8 @@ extension SFTPAuthentication: Codable {
         
         switch type {
         case .password:
-            let value = try container.decode(String.self, forKey: .string)
+            // Password is not stored in UserDefaults
+            let value = ""
             self = .password(value: value)
         case .key:
             let path = try container.decode(String.self, forKey: .string)
