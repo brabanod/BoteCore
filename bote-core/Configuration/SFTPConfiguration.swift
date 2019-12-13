@@ -31,7 +31,7 @@ struct SFTPConfiguration: ConnectionConfiguration, Codable {
      Use this initializer, to create a new configuration, with a new password.
      If a keychain item already exists for this configuration, the password will be overriden.
      */
-    init(path: String, host: String, port: Int?, authentication: SFTPAuthentication, user: String) throws {
+    init(path: String, host: String, port: Int?, user: String, authentication: SFTPAuthentication) throws {
         self.path = path
         self.host = host
         self.port = port
