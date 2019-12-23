@@ -1,5 +1,5 @@
 //
-//  SFTPConfiguration.swift
+//  SFTPConnection.swift
 //  bote-core
 //
 //  Created by Pascal Braband on 10.12.19.
@@ -19,12 +19,26 @@ enum SFTPAuthentication: Equatable {
  `.password(value: String)` in `authentication` is will not be saved and is only for initializing.
  If you want to access the password
  */
-struct SFTPConfiguration: ConnectionConfiguration, Codable {
+struct SFTPConnection: Connection {
+    let type: ConnectionType = ConnectionType.sftp
+    
     var path: String
     var port: Int?
     private(set) var host: String
     private(set) var authentication: SFTPAuthentication
     private(set) var user: String
+    
+    
+    /**
+     Required initializer from the Connection protocol. Creates an empty instance.
+     */
+    init() {
+        self.path = String()
+        self.port = Int()
+        self.host = String()
+        self.user = String()
+        self.authentication = SFTPAuthentication.key(path: String())
+    }
     
     
     /**
@@ -39,6 +53,7 @@ struct SFTPConfiguration: ConnectionConfiguration, Codable {
         
         // type = .password -> set authentication and save in keychain
         // type = .key -> set authentication
+        // The same as setAuthentication, but cannot be called, since object not yet initialized
         switch authentication {
         case .password(value: let newPassword):
             self.authentication = .password(value: newPassword)
@@ -167,7 +182,6 @@ struct SFTPConfiguration: ConnectionConfiguration, Codable {
     
     // MARK: - Keychain
     
-    
     /**
      Updates the password for the associated keychain item.
      Creates a new keychain item with given password, if keychain item doesn't exist.
@@ -191,6 +205,40 @@ struct SFTPConfiguration: ConnectionConfiguration, Codable {
             try KeychainGuard.addItem(user: user, password: password, server: host, type: "SFTP")
         }
     }
+    
+    
+    
+    // MARK: - Encoding/Decoding
+    
+    enum CodingKeys: String, CodingKey {
+        case sftpPath, sftpPort, sftpHost, sftpAuthentication, sftpUser
+    }
+    
+    
+    /**
+     Encodes the object for a given Encoder.
+     */
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.path, forKey: .sftpPath)
+        try container.encode(self.port, forKey: .sftpPort)
+        try container.encode(self.host, forKey: .sftpHost)
+        try container.encode(self.authentication, forKey: .sftpAuthentication)
+        try container.encode(self.user, forKey: .sftpUser)
+    }
+    
+    
+    /**
+     Decodes the object for a given Decoder.
+     */
+    mutating func decode(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.path = try container.decode(String.self, forKey: .sftpPath)
+        self.port = try container.decode(Int?.self, forKey: .sftpPort)
+        self.host = try container.decode(String.self, forKey: .sftpHost)
+        self.authentication = try container.decode(SFTPAuthentication.self, forKey: .sftpAuthentication)
+        self.user = try container.decode(String.self, forKey: .sftpUser)
+    }
 }
 
 
@@ -202,10 +250,12 @@ extension SFTPAuthentication: Codable {
         case type, string
     }
     
+    
     private enum SFTPAuthenticationType: String, Codable {
         case password
         case key
     }
+    
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -222,6 +272,7 @@ extension SFTPAuthentication: Codable {
             self = .key(path: path)
         }
     }
+    
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

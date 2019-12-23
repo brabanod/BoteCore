@@ -10,7 +10,7 @@
 import Foundation
 
 protocol SyncHandler {
-    init(configuration: ConnectionConfiguration)
+    init(configuration: Connection)
     func uploadFile(path: String)
     func removeFile(path: String)
     func renameFile(src: String, dst: String)

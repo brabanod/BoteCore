@@ -44,7 +44,7 @@ class SyncOrchestrator {
         // Setup SyncHandler for configuration.to
         // Save both in a data structure
         
-        //let a = try SFTPConfiguration(path: "a", host: "s", port: nil, authentication: .key(path: "asd"), user: "pi", password: "")
+        //let a = try SFTPConnection(path: "a", host: "s", port: nil, authentication: .key(path: "asd"), user: "pi", password: "")
         //let path = a.authentication
     }
 }

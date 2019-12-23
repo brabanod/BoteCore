@@ -49,9 +49,6 @@ class PreferencesManager: NSObject {
      A dictionary with all keys and values, stored in the preferences.
      */
     public static func loadAll() throws -> [String: Configuration]? {
-        guard let all = defaults.dictionaryRepresentation() as? [String: Configuration] else {
-            return nil
-        }
-        return all
+        return defaults.dictionaryRepresentation() as? [String: Configuration]
     }
 }
