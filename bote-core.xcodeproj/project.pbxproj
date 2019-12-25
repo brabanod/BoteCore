@@ -25,6 +25,8 @@
 		505902BF239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */; };
 		505902C1239FBFC400FB6DB2 /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902C0239FBFC400FB6DB2 /* FileWatcher.swift */; };
 		505902C2239FBFC400FB6DB2 /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902C0239FBFC400FB6DB2 /* FileWatcher.swift */; };
+		506C4EFF23B1719600AECD13 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506C4EFE23B1719600AECD13 /* ConfigurationTests.swift */; };
+		506C4F0023B171A000AECD13 /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
 		5084A1DD23B0C79600BF618D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5084A1DC23B0C79600BF618D /* Connection.swift */; };
 		5084A1DE23B0C79600BF618D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5084A1DC23B0C79600BF618D /* Connection.swift */; };
 		508FD7A7239F904500E29FD9 /* LocalFileWatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD7A6239F904500E29FD9 /* LocalFileWatcherTests.swift */; };
@@ -68,6 +70,7 @@
 		505902B9239FBCEA00FB6DB2 /* SFTPConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPConnection.swift; sourceTree = "<group>"; };
 		505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncOrchestrator.swift; sourceTree = "<group>"; };
 		505902C0239FBFC400FB6DB2 /* FileWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileWatcher.swift; sourceTree = "<group>"; };
+		506C4EFE23B1719600AECD13 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		5084A1DC23B0C79600BF618D /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		508FD7A6239F904500E29FD9 /* LocalFileWatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileWatcherTests.swift; sourceTree = "<group>"; };
 		50972BB9239F0A54005C1BBD /* bote-core */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "bote-core"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -182,6 +185,7 @@
 				508FD7A6239F904500E29FD9 /* LocalFileWatcherTests.swift */,
 				50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */,
 				50388C4123A2F51D00AA2F5E /* SFTPConnectionTests.swift */,
+				506C4EFE23B1719600AECD13 /* ConfigurationTests.swift */,
 				50FF976823A15913007DF0FE /* FileHelper.swift */,
 				50388C4323A2F56700AA2F5E /* TestsCommon.swift */,
 				50972BDB239F0C9E005C1BBD /* Info.plist */,
@@ -344,8 +348,10 @@
 				508FD7A8239F935D00E29FD9 /* LocalFileWatcher.swift in Sources */,
 				50388C4023A29BD800AA2F5E /* PreferencesManager.swift in Sources */,
 				508FD7A9239F936000E29FD9 /* LocalFileWatcherSubscription.swift in Sources */,
+				506C4F0023B171A000AECD13 /* SyncHandler.swift in Sources */,
 				50388C4623A2F69C00AA2F5E /* KeychainGuard.swift in Sources */,
 				505902BB239FBCEA00FB6DB2 /* SFTPConnection.swift in Sources */,
+				506C4EFF23B1719600AECD13 /* ConfigurationTests.swift in Sources */,
 				505902BC239FBCEF00FB6DB2 /* LocalConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

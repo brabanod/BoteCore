@@ -11,8 +11,9 @@ import Foundation
 struct Configuration {
     var from: Connection
     var to: Connection
-    var fromType: ConnectionType
-    var toType: ConnectionType
+    
+    var fromType : ConnectionType { return from.type }
+    var toType : ConnectionType { return to.type }
     
     private var id: String = UUID.init().uuidString
 }
@@ -29,14 +30,16 @@ extension Configuration: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         self.id = try container.decode(String.self, forKey: .id)
+
+        var type: ConnectionType
         
-        self.fromType = try container.decode(ConnectionType.self, forKey: .fromType)
-        self.from = self.fromType.createConnection()
-        try self.from.decode(from: decoder)
-        
-        self.toType = try container.decode(ConnectionType.self, forKey: .toType)
-        self.to = self.toType.createConnection()
-        try self.to.decode(from: decoder)
+        type = try container.decode(ConnectionType.self, forKey: .fromType)
+        let fromDecoder = try container.superDecoder(forKey: .from)
+        self.from = try type.getType().init(from: fromDecoder)
+
+        type = try container.decode(ConnectionType.self, forKey: .toType)
+        let toDecoder = try container.superDecoder(forKey: .to)
+        self.to = try type.getType().init(from: toDecoder)
     }
     
     
@@ -44,11 +47,13 @@ extension Configuration: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         
         try container.encode(self.id, forKey: .id)
-        
+
         try container.encode(self.fromType, forKey: .fromType)
-        try from.encode(to: encoder)
-        
+        let fromContainer = container.superEncoder(forKey: .from)
+        try from.encode(to: fromContainer)
+
         try container.encode(self.toType, forKey: .toType)
-        try to.encode(to: encoder)
+        let toContainer = container.superEncoder(forKey: .to)
+        try to.encode(to: toContainer)
     }
 }

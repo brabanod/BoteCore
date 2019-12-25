@@ -8,14 +8,9 @@
 
 import Foundation
 
-protocol Connection {
+protocol Connection: Codable {
     var type: ConnectionType { get }
     var path: String { get set }
-    
-    init()
-
-    func encode(to encoder: Encoder) throws
-    mutating func decode(from decoder: Decoder) throws
 }
 
 
@@ -23,10 +18,10 @@ enum ConnectionType : Int, Codable {
     case local
     case sftp
 
-    func createConnection() -> Connection {
+    func getType() -> Connection.Type {
         switch self {
-            case .local: return LocalConnection()
-            case .sftp: return SFTPConnection()
+            case .local: return LocalConnection.self
+            case .sftp: return SFTPConnection.self
         }
     }
 }

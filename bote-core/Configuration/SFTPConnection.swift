@@ -30,18 +30,6 @@ struct SFTPConnection: Connection {
     
     
     /**
-     Required initializer from the Connection protocol. Creates an empty instance.
-     */
-    init() {
-        self.path = String()
-        self.port = Int()
-        self.host = String()
-        self.user = String()
-        self.authentication = SFTPAuthentication.key(path: String())
-    }
-    
-    
-    /**
      Use this initializer, to create a new configuration, with a new password.
      If a keychain item already exists for this configuration, the password will be overriden.
      */
@@ -204,40 +192,6 @@ struct SFTPConnection: Connection {
             // Create item, if it doesn't exist
             try KeychainGuard.addItem(user: user, password: password, server: host, type: "SFTP")
         }
-    }
-    
-    
-    
-    // MARK: - Encoding/Decoding
-    
-    enum CodingKeys: String, CodingKey {
-        case sftpPath, sftpPort, sftpHost, sftpAuthentication, sftpUser
-    }
-    
-    
-    /**
-     Encodes the object for a given Encoder.
-     */
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.path, forKey: .sftpPath)
-        try container.encode(self.port, forKey: .sftpPort)
-        try container.encode(self.host, forKey: .sftpHost)
-        try container.encode(self.authentication, forKey: .sftpAuthentication)
-        try container.encode(self.user, forKey: .sftpUser)
-    }
-    
-    
-    /**
-     Decodes the object for a given Decoder.
-     */
-    mutating func decode(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.path = try container.decode(String.self, forKey: .sftpPath)
-        self.port = try container.decode(Int?.self, forKey: .sftpPort)
-        self.host = try container.decode(String.self, forKey: .sftpHost)
-        self.authentication = try container.decode(SFTPAuthentication.self, forKey: .sftpAuthentication)
-        self.user = try container.decode(String.self, forKey: .sftpUser)
     }
 }
 

@@ -174,34 +174,15 @@ class SFTPConnectionTests: XCTestCase {
     
     // MARK: - Encoding/Decoding
     
-    struct EncodeDecodeDummy: Codable {
-        var con: SFTPConnection
-        
-        init(connection: SFTPConnection) {
-            self.con = connection
-        }
-        
-        init(from decoder: Decoder) throws {
-            self.con = SFTPConnection()
-            try self.con.decode(from: decoder)
-        }
-        
-        func encode(to encoder: Encoder) throws {
-            try con.encode(to: encoder)
-        }
-    }
-    
-    
     func testEncodeDecodePassword() throws {
         let conf = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-        let dummy = EncodeDecodeDummy(connection: conf)
         
         // Encode configuration
-        let encoded = try PropertyListEncoder().encode(dummy)
+        let encodedConf = try PropertyListEncoder().encode(conf)
         //try encodedConf.write(to: URL(fileURLWithPath: "\(testsBasepath)/sftp_conf.plist"))
         
         // Decode configuration and check if all properties are set correct
-        let decodedConf = try PropertyListDecoder().decode(EncodeDecodeDummy.self, from: encoded).con
+        let decodedConf = try PropertyListDecoder().decode(SFTPConnection.self, from: encodedConf)
         XCTAssertEqual(decodedConf.path, testsBasepath)
         XCTAssertEqual(decodedConf.host, SFTPServer.host)
         XCTAssertEqual(decodedConf.port, SFTPServer.port)
@@ -211,13 +192,12 @@ class SFTPConnectionTests: XCTestCase {
     
     func testEncodingKeypath() throws {
         let conf = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: SFTPServer.keypath))
-        let dummy = EncodeDecodeDummy(connection: conf)
         
         // Encode configuration
-        let encoded = try PropertyListEncoder().encode(dummy)
+        let encodedConf = try PropertyListEncoder().encode(conf)
         
         // Decode configuration and check if all properties are set correct
-        let decodedConf = try PropertyListDecoder().decode(EncodeDecodeDummy.self, from: encoded).con
+        let decodedConf = try PropertyListDecoder().decode(SFTPConnection.self, from: encodedConf)
         XCTAssertEqual(decodedConf.path, testsBasepath)
         XCTAssertEqual(decodedConf.host, SFTPServer.host)
         XCTAssertEqual(decodedConf.port, SFTPServer.port)
