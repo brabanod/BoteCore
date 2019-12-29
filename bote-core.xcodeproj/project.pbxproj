@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		50038F3A23A450C30030068B /* ConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50038F3923A450C30030068B /* ConfigurationManager.swift */; };
 		50038F3B23A450C50030068B /* ConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50038F3923A450C30030068B /* ConfigurationManager.swift */; };
+		5007742823B4CD830089A127 /* PreferencesManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5007742723B4CD830089A127 /* PreferencesManagerTests.swift */; };
 		50388C3F23A29BD800AA2F5E /* PreferencesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50388C3E23A29BD800AA2F5E /* PreferencesManager.swift */; };
 		50388C4023A29BD800AA2F5E /* PreferencesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50388C3E23A29BD800AA2F5E /* PreferencesManager.swift */; };
 		50388C4223A2F51D00AA2F5E /* SFTPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50388C4123A2F51D00AA2F5E /* SFTPConnectionTests.swift */; };
@@ -27,7 +28,6 @@
 		505902C2239FBFC400FB6DB2 /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902C0239FBFC400FB6DB2 /* FileWatcher.swift */; };
 		506C4EFF23B1719600AECD13 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506C4EFE23B1719600AECD13 /* ConfigurationTests.swift */; };
 		506C4F0023B171A000AECD13 /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
-		5079619423B41FA700768C8C /* PreferencesManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5079619323B41FA700768C8C /* PreferencesManagerTests.swift */; };
 		5084A1DD23B0C79600BF618D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5084A1DC23B0C79600BF618D /* Connection.swift */; };
 		5084A1DE23B0C79600BF618D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5084A1DC23B0C79600BF618D /* Connection.swift */; };
 		508FD7A7239F904500E29FD9 /* LocalFileWatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD7A6239F904500E29FD9 /* LocalFileWatcherTests.swift */; };
@@ -63,6 +63,7 @@
 
 /* Begin PBXFileReference section */
 		50038F3923A450C30030068B /* ConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationManager.swift; sourceTree = "<group>"; };
+		5007742723B4CD830089A127 /* PreferencesManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesManagerTests.swift; sourceTree = "<group>"; };
 		50388C3E23A29BD800AA2F5E /* PreferencesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesManager.swift; sourceTree = "<group>"; };
 		50388C4123A2F51D00AA2F5E /* SFTPConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPConnectionTests.swift; sourceTree = "<group>"; };
 		50388C4323A2F56700AA2F5E /* TestsCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestsCommon.swift; sourceTree = "<group>"; };
@@ -72,7 +73,6 @@
 		505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncOrchestrator.swift; sourceTree = "<group>"; };
 		505902C0239FBFC400FB6DB2 /* FileWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileWatcher.swift; sourceTree = "<group>"; };
 		506C4EFE23B1719600AECD13 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
-		5079619323B41FA700768C8C /* PreferencesManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesManagerTests.swift; sourceTree = "<group>"; };
 		5084A1DC23B0C79600BF618D /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		508FD7A6239F904500E29FD9 /* LocalFileWatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileWatcherTests.swift; sourceTree = "<group>"; };
 		50972BB9239F0A54005C1BBD /* bote-core */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "bote-core"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -188,7 +188,7 @@
 				50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */,
 				50388C4123A2F51D00AA2F5E /* SFTPConnectionTests.swift */,
 				506C4EFE23B1719600AECD13 /* ConfigurationTests.swift */,
-				5079619323B41FA700768C8C /* PreferencesManagerTests.swift */,
+				5007742723B4CD830089A127 /* PreferencesManagerTests.swift */,
 				50FF976823A15913007DF0FE /* FileHelper.swift */,
 				50388C4323A2F56700AA2F5E /* TestsCommon.swift */,
 				50972BDB239F0C9E005C1BBD /* Info.plist */,
@@ -336,7 +336,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5079619423B41FA700768C8C /* PreferencesManagerTests.swift in Sources */,
+				5007742823B4CD830089A127 /* PreferencesManagerTests.swift in Sources */,
 				508FD7AA239F936800E29FD9 /* FileEvent.swift in Sources */,
 				5084A1DE23B0C79600BF618D /* Connection.swift in Sources */,
 				508FD7A7239F904500E29FD9 /* LocalFileWatcherTests.swift in Sources */,
@@ -483,6 +483,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NL97TS4Q9A;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "de.pascalbraband.bote-core";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -495,6 +496,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NL97TS4Q9A;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "de.pascalbraband.bote-core";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};

@@ -59,8 +59,8 @@ class ConfigurationTests: XCTestCase {
     }
     
     func testEncodeDecodeSameConnectionTypes() throws {
-        let f = try SFTPConnection(path: "from\(testsBasepath)", host: "from\(SFTPServer.host)", port: 1, user: "from\(SFTPServer.user)", authentication: .key(path: "from\(SFTPServer.keypath)"))
-        let t = try SFTPConnection(path: "to\(testsBasepath)", host: "to\(SFTPServer.host)", port: 2, user: "to\(SFTPServer.user)", authentication: .key(path: "to\(SFTPServer.keypath)"))
+        let f = try SFTPConnection(path: "from\(testsBasepath)", host: "from\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "from\(SFTPServer.user)", authentication: .key(path: "from\(SFTPServer.keypath)"))
+        let t = try SFTPConnection(path: "to\(testsBasepath)", host: "to\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 2, user: "to\(SFTPServer.user)", authentication: .key(path: "to\(SFTPServer.keypath)"))
 
         let conf = Configuration(from: f, to: t)
         
@@ -77,14 +77,14 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(decodedF.type, ConnectionType.sftp)
         XCTAssertEqual(decodedF.path, "from\(testsBasepath)")
         XCTAssertEqual(decodedF.host, "from\(SFTPServer.host)")
-        XCTAssertEqual(decodedF.port, 1)
+        XCTAssertEqual(decodedF.port, (SFTPServer.port ?? 0) + 1)
         XCTAssertEqual(decodedF.user, "from\(SFTPServer.user)")
         XCTAssertEqual(decodedF.authentication, SFTPAuthentication.key(path: "from\(SFTPServer.keypath)"))
         
         XCTAssertEqual(decodedT.type, ConnectionType.sftp)
         XCTAssertEqual(decodedT.path, "to\(testsBasepath)")
         XCTAssertEqual(decodedT.host, "to\(SFTPServer.host)")
-        XCTAssertEqual(decodedT.port, 2)
+        XCTAssertEqual(decodedT.port, (SFTPServer.port ?? 0) + 2)
         XCTAssertEqual(decodedT.user, "to\(SFTPServer.user)")
         XCTAssertEqual(decodedT.authentication, SFTPAuthentication.key(path: "to\(SFTPServer.keypath)"))
     }
