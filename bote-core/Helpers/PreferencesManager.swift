@@ -25,21 +25,37 @@ class PreferencesManager: NSObject {
             return saved
         } else {
             let new = [String: Data]()
-            save(new)
+            write(new)
             return new
         }
     }
     
     
     /**
-     Saves the given configurations dictionary in the UserDefaults. Needs to be called at the end of every operation on the configurations dictionary.
+     Saves the given configurations dictionary in the UserDefaults. Thus overrides all other configurations saved in the UserDefaults
      
      - parameters:
         - configurations: The dictionary, which should be saved to the UserDefaults.
      */
-    private static func save(_ configurations: [String: Data]) {
+    private static func write(_ configurations: [String: Data]) {
         defaults.set(configurations, forKey: configurationsKey)
         defaults.synchronize()
+    }
+    
+    
+    /**
+     Saves the given configurations dictionary in the UserDefaults. Thus overrides all other configurations saved in the UserDefaults.
+     
+     - parameters:
+        - configurations: The dictionary, which should be saved to the UserDefaults.
+     */
+    public static func write(_ configurations: [Configuration]) throws {
+        var configurationsData = [String: Data]()
+        for configuration in configurations {
+            let configurationData = try PropertyListEncoder().encode(configuration)
+            configurationsData[configuration.id] = configurationData
+        }
+        write(configurationsData)
     }
     
     
@@ -57,7 +73,7 @@ class PreferencesManager: NSObject {
         // Save to defaults dictionary
         var all = getConfigurations()
         all[key] = configurationData
-        save(all)
+        write(all)
     }
     
     
@@ -121,7 +137,7 @@ class PreferencesManager: NSObject {
     public static func remove(for id: String) {
         var all = getConfigurations()
         all.removeValue(forKey: id)
-        save(all)
+        write(all)
     }
     
     

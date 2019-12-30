@@ -112,7 +112,7 @@ class PreferencesManagerTests: XCTestCase {
         XCTAssertEqual(loadedC2T.user, "t2\(SFTPServer.user)")
         XCTAssertEqual(loadedC2T.authentication, SFTPAuthentication.key(path: "t2\(SFTPServer.keypath)"))
         
-        // Test c1
+        // Test c3
         guard let loadedC3F = loadedC3.from as? SFTPConnection else { XCTFail("Failed to load configuration.from"); return }
         guard let loadedC3T = loadedC3.to as? LocalConnection else { XCTFail("Failed to load configuration.to"); return }
         
