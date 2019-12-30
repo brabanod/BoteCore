@@ -33,8 +33,13 @@ class SyncOrchestrator {
         - configuration: The configuration, for which a synchronization should be started.
      */
     func startSynchronizing(with configuration: Configuration) {
-        let localWatcher = LocalFileWatcher.init(watchPath: "path/")
-        // let remoteWatcher = RemoteFileWatcher.get(for: configuration, watchPath: "/") --> gives corresponding file watcher for protocol (e.g. SFTPFileWatcher instance)
+        // FileWatcherManager.get(for: configuration.to, watchPath: "/") --> returns e.g. LocalFileWatcher (conforms to FileWatcher protocol)
+        // FileWatcherManager.get(for: configuration.from, watchPath: "/") --> returns e.g. SFTPFileWatcher (conforms to FileWatcher protocol)
+        
+        let localWatcher = LocalFileWatcher.init(watchPath: "path/")//.sink(receiveCompletion: {...}) {...}
+        // let remoteWatcher = RemoteFileWatcher.get(for: configuration.from, watchPath: "/") --> gives corresponding file watcher for protocol (e.g. SFTPFileWatcher instance)
+        
+        // FIXME: Define FileWatcher as protocol instead of enum. Protocol which specifies each FileWatcher to be a Publisher, who publishes FileEvents
         let watcher = FileWatcher.local(watcher: localWatcher)
         //let syncHandler: SyncHandler = SyncHandlerOrganizer.get(for: configuration) --> gives corresponding sync handler for protocol (e.g. SFTPSyncHandler instance)
         configurations.append(SyncItem(configuration: configuration, fileWatcher: watcher))
