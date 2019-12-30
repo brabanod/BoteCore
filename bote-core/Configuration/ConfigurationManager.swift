@@ -10,8 +10,14 @@ import Foundation
 
 class ConfigurationManager: NSObject {
     
-    var configurations: [Configuration]
+    private (set) var configurations: [Configuration]
     
+    
+    /**
+     - returns:
+        - _Default_: New `ConfigurationManager` object.
+        - _Failure_: If the configurations couldn't be loaded from the UserDefaults, the initializer returns `nil`.
+    */
     init?(_: Void) {
         self.configurations = [Configuration]()
         super.init()
@@ -24,12 +30,39 @@ class ConfigurationManager: NSObject {
     }
     
     
+    /**
+     Adds a new `Configuration` object to the UserDefaults.
+     
+     - parameters:
+        - configuration: The `Configuration` object which should be saved.
+    */
     func add(_ configuration: Configuration) throws {
         try PreferencesManager.save(configuration: configuration)
         try reloadList()
     }
     
     
+    /**
+     Saves the given `Configuration` object for in the UserDefaults for a given id.
+     
+     - parameters:
+        - configuration: The `Configuration` object which should be saved. Must be given as a reference.
+        - id: The id of the `Configuration` object in the UserDefaults, which should be updated.
+    */
+    func update(_ configuration: inout Configuration, for id: String) throws {
+        // Set correct id for given configuration. Then update in Preferences
+        configuration.setId(id)
+        try PreferencesManager.save(configuration: configuration)
+        try reloadList()
+    }
+    
+    
+    /**
+     Removes a `Configuration` object from the UserDefaults, identified by its id.
+     
+     - parameters:
+        - id: The id of the `Configuration` object in the UserDefaults, which should be removed.
+    */
     func remove(id: String) throws {
         // Call custom remove method for on the Configuration, then remove Configuration itself
         try PreferencesManager.load(for: id)?.remove()

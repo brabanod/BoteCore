@@ -17,10 +17,17 @@ struct Configuration {
     
     private (set) var id: String = UUID.init().uuidString
     
+    
     init(from: Connection, to: Connection) {
         self.from = from
         self.to = to
     }
+    
+    
+    mutating func setId(_ id: String) {
+        self.id = id
+    }
+    
     
     func remove() {
         from.remove()

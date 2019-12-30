@@ -164,36 +164,43 @@ class ConfigurationManagerTests: XCTestCase {
         guard let cm = ConfigurationManager(()) else { XCTFail("Failed to initialize ConfigurationManager."); return }
         try cm.add(conf)
         
-        // Update
+        // Perform updates on configuration
         var cmConf = cm.configurations[0]
         cmConf.from.path = "new\(testsBasepath)"
-//        if var sftpCon = conf.to as? SFTPConnection {
-//            try sftpCon.setUser("new\(SFTPServer.user)")
-//        }
         cmConf.to.path = "neww\(testsBasepath)"
+        if var sftpCon = cmConf.to as? SFTPConnection {
+            try sftpCon.setUser("new\(SFTPServer.user)")
+            cmConf.to = sftpCon
+        }
         
-        // Check before persist
+        
+        // Check before Update
         let cmConfBeforePersist = cm.configurations[0]
-        XCTAssertEqual(cmConfBeforePersist.from.path, "new\(testsBasepath)")
-//        XCTAssertEqual((cmConfBeforePersist.to as! SFTPConnection).user, "new\(SFTPServer.user)")
-        XCTAssertEqual(cmConfBeforePersist.to.path, "neww\(testsBasepath)")
+        XCTAssertEqual(cmConfBeforePersist.id, conf.id)
+        XCTAssertEqual(cmConfBeforePersist.from.path, testsBasepath)
+        XCTAssertEqual((cmConfBeforePersist.to as! SFTPConnection).user, SFTPServer.user)
+        XCTAssertEqual(cmConfBeforePersist.to.path, testsBasepath)
         
         guard let udConfBeforePersist = try PreferencesManager.load(for: conf.id) else { XCTFail("Couldn't load configuration from UserDefaults."); return }
+        XCTAssertEqual(udConfBeforePersist.id, conf.id)
         XCTAssertEqual(udConfBeforePersist.from.path, testsBasepath)
-//        XCTAssertEqual((udConfBeforePersist.to as! SFTPConnection).user, SFTPServer.user)
+        XCTAssertEqual((udConfBeforePersist.to as! SFTPConnection).user, SFTPServer.user)
         XCTAssertEqual(udConfBeforePersist.to.path, testsBasepath)
         
-        try cm.persist()
+        // Update in UserDefaults
+        try cm.update(&cmConf, for: conf.id)
         
         //After persist
         let cmConfAfterPersist = cm.configurations[0]
+        XCTAssertEqual(cmConfAfterPersist.id, conf.id)
         XCTAssertEqual(cmConfAfterPersist.from.path, "new\(testsBasepath)")
-//        XCTAssertEqual((cmConfAfterPersist.to as! SFTPConnection).user, "new\(SFTPServer.user)")
+        XCTAssertEqual((cmConfAfterPersist.to as! SFTPConnection).user, "new\(SFTPServer.user)")
         XCTAssertEqual(cmConfAfterPersist.to.path, "neww\(testsBasepath)")
         
         guard let udConfAfterPersist = try PreferencesManager.load(for: conf.id) else { XCTFail("Couldn't load configuration from UserDefaults."); return }
+        XCTAssertEqual(udConfAfterPersist.id, conf.id)
         XCTAssertEqual(udConfAfterPersist.from.path, "new\(testsBasepath)")
-//        XCTAssertEqual((udConfAfterPersist.to as! SFTPConnection).user, "new\(SFTPServer.user)")
+        XCTAssertEqual((udConfAfterPersist.to as! SFTPConnection).user, "new\(SFTPServer.user)")
         XCTAssertEqual(udConfAfterPersist.to.path, "neww\(testsBasepath)")
     }
     
