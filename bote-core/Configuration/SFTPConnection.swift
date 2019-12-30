@@ -129,6 +129,8 @@ struct SFTPConnection: Connection {
             try savePassword(password)
             self.authentication = .password(value: password)
         case .key(path: let path):
+            // Remove keychain item and update authentication
+            removePassword()
             self.authentication = .key(path: path)
         }
     }
@@ -145,7 +147,9 @@ struct SFTPConnection: Connection {
         - `KeychainError.unhandledError(status: OSStatus)`
      */
     mutating func setUser(_ newUser: String) throws {
-        try KeychainGuard.updateItem(user: user, server: host, newUser: user, newPassword: nil, newServer: nil)
+        if case .password = authentication {
+            try KeychainGuard.updateItem(user: user, server: host, newUser: newUser, newPassword: nil, newServer: nil)
+        }
         self.user = newUser
     }
     
@@ -161,7 +165,9 @@ struct SFTPConnection: Connection {
         - `KeychainError.unhandledError(status: OSStatus)`
      */
     mutating func setHost(_ newHost: String) throws {
-        try KeychainGuard.updateItem(user: user, server: host, newUser: nil, newPassword: nil, newServer: newHost)
+        if case .password = authentication {
+            try KeychainGuard.updateItem(user: user, server: host, newUser: nil, newPassword: nil, newServer: newHost)
+        }
         self.host = newHost
     }
     
@@ -193,10 +199,31 @@ struct SFTPConnection: Connection {
             try KeychainGuard.addItem(user: user, password: password, server: host, type: "SFTP")
         }
     }
+    
+    
+    /**
+     Remove the keychain item associated with this configuration
+     */
+    private func removePassword() {
+        do {
+            try KeychainGuard.removeItem(user: user, server: host)
+        } catch { }
+    }
+    
+    
+    
+    
+    // MARK: - Remove
+    
+    func remove() {
+        removePassword()
+    }
 }
 
 
 
+
+// MARK: -
 
 extension SFTPAuthentication: Codable {
     

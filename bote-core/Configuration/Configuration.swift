@@ -21,6 +21,11 @@ struct Configuration {
         self.from = from
         self.to = to
     }
+    
+    func remove() {
+        from.remove()
+        to.remove()
+    }
 }
 
 

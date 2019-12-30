@@ -11,6 +11,11 @@ import Foundation
 protocol Connection: Codable {
     var type: ConnectionType { get }
     var path: String { get set }
+    
+    /**
+     This method gets called, when a configuration is deleted. Custom deletion operations for a specific `Connection` implementation can be performed in this method.
+     */
+    func remove()
 }
 
 

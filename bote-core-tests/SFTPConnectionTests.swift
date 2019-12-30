@@ -137,36 +137,88 @@ class SFTPConnectionTests: XCTestCase {
         XCTAssertEqual(newPass, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
     }
     
-    
-    func testSetUser() throws {
+    func testSetAuthenticationToKey() throws {
+        // Setting the authentication method to .key should remove the keychain item
         var conf = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-        XCTAssertEqual(SFTPServer.user, conf.user)
+        XCTAssertEqual(SFTPServer.password, try conf.getPassword())
         XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
         
+        // Update Authentication
+        let newAuth = SFTPServer.keypath
+        try conf.setAuthentication(.key(path: newAuth))
+        XCTAssertEqual(newAuth, conf.getKeyPath())
+        do {
+            _ = try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host)
+            XCTFail("Password should be deleted and thus not accessible.")
+        } catch { }
+    }
+    
+    func testSetUserWithPassword() throws {
+        let oldUser = "old_user"
+        var conf = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: oldUser, authentication: .password(value: SFTPServer.password))
+        XCTAssertEqual(oldUser, conf.user)
+        XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: oldUser, server: SFTPServer.host))
+        
         // Update user
-        let newUser = "new_user"
+        let newUser = SFTPServer.user
         try conf.setUser(newUser)
         XCTAssertEqual(newUser, conf.user)
         
         // Check if keychain item was updated.
         // Know that it is updated, when you can get the password for the new credentials
-        XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
+        XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: newUser, server: SFTPServer.host))
+    }
+    
+    func testSetUserWithKey() throws {
+        var conf = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: SFTPServer.keypath))
+        XCTAssertEqual(SFTPServer.user, conf.user)
+        
+        // Update user
+        let newUser = "new_user"
+        try conf.setUser(newUser)
+        XCTAssertEqual(newUser, conf.user)
     }
     
     
-    func testSetHost() throws {
-        var conf = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+    func testSetHostWithPassword() throws {
+        let oldHost = "old_host"
+        var conf = try SFTPConnection(path: testsBasepath, host: oldHost, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
         XCTAssertEqual(SFTPServer.user, conf.user)
-        XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
+        XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: oldHost))
         
         // Update user
-        let newHost = "new_host"
-        try conf.setUser(newHost)
-        XCTAssertEqual(newHost, conf.user)
+        let newHost = SFTPServer.host
+        try conf.setHost(newHost)
+        XCTAssertEqual(newHost, conf.host)
         
         // Check if keychain item was updated.
         // Know that it is updated, when you can get the password for the new credentials
+        XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: newHost))
+    }
+    
+    func testSetHostWithKey() throws {
+        var conf = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: SFTPServer.keypath))
+        XCTAssertEqual(SFTPServer.user, conf.user)
+
+        // Update user
+        let newHost = "new_host"
+        try conf.setHost(newHost)
+        XCTAssertEqual(newHost, conf.host)
+    }
+    
+    func testRemove() throws {
+        let conf = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+        XCTAssertEqual(SFTPServer.user, conf.user)
         XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
+        
+        // Remove
+        conf.remove()
+        
+        // Check if keychain item is gone
+        do {
+            _ = try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host)
+            XCTFail("Item should not exist.")
+        } catch { }
     }
     
     

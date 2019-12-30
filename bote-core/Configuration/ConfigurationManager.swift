@@ -31,8 +31,8 @@ class ConfigurationManager: NSObject {
     
     
     func remove(id: String) throws {
-        // FIXME: Also remove keychain item if present
-        //PreferencesManager.load(for: id)?.remove()
+        // Call custom remove method for on the Configuration, then remove Configuration itself
+        try PreferencesManager.load(for: id)?.remove()
         PreferencesManager.remove(for: id)
         try reloadList()
     }

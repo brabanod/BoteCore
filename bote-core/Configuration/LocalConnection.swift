@@ -12,4 +12,6 @@ struct LocalConnection: Connection {
     let type: ConnectionType = ConnectionType.local
     
     var path: String
+    
+    func remove() { }
 }
