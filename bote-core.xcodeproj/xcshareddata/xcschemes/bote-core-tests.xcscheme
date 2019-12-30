@@ -16,16 +16,16 @@
       <CodeCoverageTargets>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "50972BB8239F0A54005C1BBD"
-            BuildableName = "bote-core"
-            BlueprintName = "bote-core"
+            BlueprintIdentifier = "50972BD6239F0C9E005C1BBD"
+            BuildableName = "bote-core-tests.xctest"
+            BlueprintName = "bote-core-tests"
             ReferencedContainer = "container:bote-core.xcodeproj">
          </BuildableReference>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "50972BD6239F0C9E005C1BBD"
-            BuildableName = "bote-core-tests.xctest"
-            BlueprintName = "bote-core-tests"
+            BlueprintIdentifier = "50972BB8239F0A54005C1BBD"
+            BuildableName = "bote-core"
+            BlueprintName = "bote-core"
             ReferencedContainer = "container:bote-core.xcodeproj">
          </BuildableReference>
       </CodeCoverageTargets>

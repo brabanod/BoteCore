@@ -30,7 +30,7 @@ class LocalFileWatcherTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Register \(FileEvent.createdFile(path: filepath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             if case .createdFile(path: let path) = event {
                 if path == filepath {
@@ -52,7 +52,7 @@ class LocalFileWatcherTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Register \(FileEvent.removedFile(path: filepath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             if case .removedFile(path: let path) = event {
                 if path == filepath {
@@ -74,7 +74,7 @@ class LocalFileWatcherTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Register \(FileEvent.createdDir(path: dirpath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             if case .createdDir(path: let path) = event {
                 if dirpath == path {
@@ -98,7 +98,7 @@ class LocalFileWatcherTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Register \(FileEvent.removedDir(path: dirpath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             if case .removedDir(path: let path) = event {
                 XCTAssertEqual(dirpath, path)
@@ -122,7 +122,7 @@ class LocalFileWatcherTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPath).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             if case .renamed(src: let from, dst: let to) = event {
                 XCTAssertEqual(from, srcFilepath)
@@ -152,7 +152,7 @@ class LocalFileWatcherTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPathSub).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             if case .createdFile(path: let path) = event {
                 XCTAssertEqual(path, dstFilepath)
@@ -190,7 +190,7 @@ class LocalFileWatcherTests: XCTestCase {
         
         var registeredEvents: [FileEvent] = []
         subscriber = LocalFileWatcher.init(watchPath: watchPathSub).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             registeredEvents.append(event)
         }
@@ -223,7 +223,7 @@ class LocalFileWatcherTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPathSub).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             if case .removedFile(path: let path) = event {
                 XCTAssertEqual(path, srcFilepath)
@@ -251,7 +251,7 @@ class LocalFileWatcherTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Register \(FileEvent.renamed(src: srcFilepath, dst: dstFilepath).self)")
         
         subscriber = LocalFileWatcher.init(watchPath: watchPathSub).sink(receiveCompletion: { (completion) in
-            self.checkComplition(completion: completion)
+            self.checkCompletion(completion: completion)
         }) { (event: FileEvent) in
             if case .removedDir(path: let path) = event {
                 XCTAssertEqual(path, srcFilepath)
@@ -269,7 +269,7 @@ class LocalFileWatcherTests: XCTestCase {
     
     
     // MARK: - Common
-    func checkComplition(completion: Subscribers.Completion<LocalFileWatcher.Failure>) {
+    func checkCompletion(completion: Subscribers.Completion<LocalFileWatcher.Failure>) {
         switch completion {
         case .finished:
             XCTFail("Publisher unexpectedly finished.")
