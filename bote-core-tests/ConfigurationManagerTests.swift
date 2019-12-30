@@ -124,7 +124,7 @@ class ConfigurationManagerTests: XCTestCase {
         let t = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: SFTPServer.keypath))
         let conf = Configuration(from: f, to: t)
         
-        // Configuration Manager
+        // Add via Configuration Manager
         guard let cm = ConfigurationManager(()) else { XCTFail("Failed to initialize ConfigurationManager."); return }
         try cm.add(conf)
         
@@ -160,7 +160,7 @@ class ConfigurationManagerTests: XCTestCase {
         let t = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: SFTPServer.keypath))
         let conf = Configuration(from: f, to: t)
         
-        // Configuration Manager
+        // Add via Configuration Manager
         guard let cm = ConfigurationManager(()) else { XCTFail("Failed to initialize ConfigurationManager."); return }
         try cm.add(conf)
         
@@ -174,7 +174,7 @@ class ConfigurationManagerTests: XCTestCase {
         }
         
         
-        // Check before Update
+        // Check before update
         let cmConfBeforePersist = cm.configurations[0]
         XCTAssertEqual(cmConfBeforePersist.id, conf.id)
         XCTAssertEqual(cmConfBeforePersist.from.path, testsBasepath)
@@ -190,7 +190,7 @@ class ConfigurationManagerTests: XCTestCase {
         // Update in UserDefaults
         try cm.update(&cmConf, for: conf.id)
         
-        //After persist
+        // Check after update
         let cmConfAfterPersist = cm.configurations[0]
         XCTAssertEqual(cmConfAfterPersist.id, conf.id)
         XCTAssertEqual(cmConfAfterPersist.from.path, "new\(testsBasepath)")
@@ -205,19 +205,37 @@ class ConfigurationManagerTests: XCTestCase {
     }
     
     func testRemove() throws {
+        // Generate data
+        let f1 = LocalConnection(path: "f1\(testsBasepath)")
+        let t1 = try SFTPConnection(path: "t1\(testsBasepath)", host: "t1\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "t1\(SFTPServer.user)", authentication: .key(path: "t1\(SFTPServer.keypath)"))
         
-    }
-    
-    func testPersist() throws {
+        let f2 = try SFTPConnection(path: "f2\(testsBasepath)", host: "f2\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 2, user: "f2\(SFTPServer.user)", authentication: .key(path: "f2\(SFTPServer.keypath)"))
+        let t2 = try SFTPConnection(path: "t2\(testsBasepath)", host: "t2\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 3, user: "t2\(SFTPServer.user)", authentication: .key(path: "t2\(SFTPServer.keypath)"))
         
-    }
-    
-    func testPersistRandom() throws {
-        // randomly call persist and check if everything stays as expected
+        let f3 = try SFTPConnection(path: "f3\(testsBasepath)", host: "f3\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 4, user: "f3\(SFTPServer.user)", authentication: .key(path: "f3\(SFTPServer.keypath)"))
+        let t3 = LocalConnection(path: "t3\(testsBasepath)")
+        
+        let c1 = Configuration(from: f1, to: t1)
+        let c2 = Configuration(from: f2, to: t2)
+        let c3 = Configuration(from: f3, to: t3)
+        
+        // Add via Configuration Manager
+        guard let cm = ConfigurationManager(()) else { XCTFail("Failed to initialize ConfigurationManager."); return }
+        try cm.add(c1)
+        try cm.add(c2)
+        try cm.add(c3)
+        
+        XCTAssertEqual(cm.configurations.count, 3)
+        
+        // Remove one configuration
+        try cm.remove(id: c2.id)
+        
+        XCTAssertEqual(cm.configurations.count, 2)
+        XCTAssertEqual([cm.configurations[0].id, cm.configurations[1].id].sorted(), [c1.id, c3.id].sorted())
     }
     
     func testLoad() throws {
-        
+        // Implicitly tested in testInitPreLoaded()
     }
     
     func compare(dict: [String: Configuration], to array: [Configuration]) -> Bool {

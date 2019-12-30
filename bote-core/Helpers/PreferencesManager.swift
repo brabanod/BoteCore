@@ -158,7 +158,6 @@ class PreferencesManager: NSObject {
      Removes all configurations saved in the User Defaults.
      */
     public static func removeAll() {
-        print(configurationsSuiteName)
         defaults.removePersistentDomain(forName: configurationsSuiteName)
         defaults.synchronize()
     }

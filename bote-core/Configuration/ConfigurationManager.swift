@@ -72,16 +72,6 @@ class ConfigurationManager: NSObject {
     
     
     /**
-     Saves the changes, that are cached in `configurations`, to UserDefaults.
-     */
-    func persist() throws {
-        try reloadList()
-        try PreferencesManager.write(configurations)
-        try reloadList()
-    }
-    
-    
-    /**
      - returns:
      An array of the `Configuration` objects, which are stored in the UserDefaults.
      */
