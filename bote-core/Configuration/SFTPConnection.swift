@@ -89,19 +89,15 @@ struct SFTPConnection: Connection {
     
     /**
      - returns:
-     The path for the SSH key, saved in the configuration.
-     
-     - throws:
-        - `KeychainError.itemNotFound`
-        - `KeychainError.unexpectedPasswordData`
-        - `KeychainError.unhandledError(status: OSStatus)`
-     */
-    func getKeyPath() -> String {
+        - The path for the SSH key, saved in the configuration
+        - `nil` if authentication method is not `.key`
+    */
+    func getKeyPath() -> String? {
         switch self.authentication {
         case .key(path: let path):
             return path
         default:
-            return ""
+            return nil
         }
     }
     
