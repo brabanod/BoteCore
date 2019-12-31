@@ -12,19 +12,24 @@ import Combine
 struct SyncItem {
     let configuration: Configuration
     let fileWatcher: FileWatcher
-//    let fileWatcherSubscription: AnyCancellable
-//    let syncHandler: SyncHandler
+    let fileWatcherSubscription: AnyCancellable
+    let syncHandler: SyncHandler
     var id: String { return self.configuration.id }
+}
+
+enum SyncOrchestratorError: Error {
+    case SyncHandlerInitFailure(String)
+    case FileWatcherInitFailure(String)
 }
 
 class SyncOrchestrator {
     
     var configurations: [SyncItem]
     
-    init(configurations: [Configuration]) {
+    init(configurations: [Configuration]) throws {
         self.configurations = [SyncItem]()
         for configuration in configurations {
-            startSynchronizing(with: configuration)
+            try startSynchronizing(with: configuration)
         }
     }
     
@@ -35,18 +40,27 @@ class SyncOrchestrator {
      - parameters:
         - configuration: The configuration, for which a synchronization should be started.
      */
-    func startSynchronizing(with configuration: Configuration) {
+    public func startSynchronizing(with configuration: Configuration) throws {
         // Setup synchronizing with the given configuration
         
         // Setup SyncHandler for configuration.to
-        //let syncHandler: SyncHandler = SyncHandlerOrganizer.get(for: configuration) --> gives corresponding sync handler for protocol (e.g. SFTPSyncHandler instance)
+        guard let syncHandler: SyncHandler = SyncHandlerOrganizer.getSyncHandler(for: configuration.to) else { throw SyncOrchestratorError.SyncHandlerInitFailure("Initialization of SyncHandler failed and returned nil. Unsupported Connection type possible.")}
         
         // Setup FileWatcher for configuration.from (user SyncHandler in receive from Publisher)
-        let fileWatcher = FileWatcherOrganizer.getFileManager(for: configuration.from)
-        // let fileWatcherSubscription: AnyCancelable = watcher.sink(receiveCompletion: {...}) {...}
+        guard let fileWatcher = FileWatcherOrganizer.getFileWatcher(for: configuration.from) else { throw SyncOrchestratorError.FileWatcherInitFailure("Initialization of FileWatcher failed. and returned nil. Unsupported Connection type possible.")}
+        let fileWatcherSubscription = fileWatcher.sink(receiveCompletion: { (completion) in
+            switch completion {
+            case .finished:
+                print("Finished watching")
+            case .failure(let error):
+                print("Error watching: \(error)")
+            }
+        }) { (event) in
+            print(event)
+        }
         
         // Save both in a data structure
-        configurations.append(SyncItem(configuration: configuration, fileWatcher: fileWatcher))
+        configurations.append(SyncItem(configuration: configuration, fileWatcher: fileWatcher, fileWatcherSubscription: fileWatcherSubscription, syncHandler: syncHandler))
     }
     
     
@@ -56,7 +70,7 @@ class SyncOrchestrator {
      - parameters:
         - item: The `SyncItem` for which the synchronization should be stopped.
      */
-    func stopSynchronizing(for item: SyncItem) {
+    public func stopSynchronizing(for item: SyncItem) {
         
     }
     // alternative
