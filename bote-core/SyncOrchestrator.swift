@@ -7,11 +7,14 @@
 //
 
 import Foundation
+import Combine
 
 struct SyncItem {
     let configuration: Configuration
     let fileWatcher: FileWatcher
+//    let fileWatcherSubscription: AnyCancellable
 //    let syncHandler: SyncHandler
+    var id: String { return self.configuration.id }
 }
 
 class SyncOrchestrator {
@@ -27,29 +30,35 @@ class SyncOrchestrator {
     
     
     /**
-     Starts synchronization for a given configuration.
+     Starts synchronization for a given configuration. Adds the resulting `SyncItem` to the `configurations` property.
      
      - parameters:
         - configuration: The configuration, for which a synchronization should be started.
      */
     func startSynchronizing(with configuration: Configuration) {
-        // FileWatcherManager.get(for: configuration.to, watchPath: "/") --> returns e.g. LocalFileWatcher (conforms to FileWatcher protocol)
-        // FileWatcherManager.get(for: configuration.from, watchPath: "/") --> returns e.g. SFTPFileWatcher (conforms to FileWatcher protocol)
-        
-        let localWatcher = LocalFileWatcher.init(watchPath: "path/")//.sink(receiveCompletion: {...}) {...}
-        // let remoteWatcher = RemoteFileWatcher.get(for: configuration.from, watchPath: "/") --> gives corresponding file watcher for protocol (e.g. SFTPFileWatcher instance)
-        
-        // FIXME: Define FileWatcher as protocol instead of enum. Protocol which specifies each FileWatcher to be a Publisher, who publishes FileEvents
-        let watcher = FileWatcher.local(watcher: localWatcher)
-        //let syncHandler: SyncHandler = SyncHandlerOrganizer.get(for: configuration) --> gives corresponding sync handler for protocol (e.g. SFTPSyncHandler instance)
-        configurations.append(SyncItem(configuration: configuration, fileWatcher: watcher))
-        
         // Setup synchronizing with the given configuration
-        // Setup FileWatcher for configuration.from
-        // Setup SyncHandler for configuration.to
-        // Save both in a data structure
         
-        //let a = try SFTPConnection(path: "a", host: "s", port: nil, authentication: .key(path: "asd"), user: "pi", password: "")
-        //let path = a.authentication
+        // Setup SyncHandler for configuration.to
+        //let syncHandler: SyncHandler = SyncHandlerOrganizer.get(for: configuration) --> gives corresponding sync handler for protocol (e.g. SFTPSyncHandler instance)
+        
+        // Setup FileWatcher for configuration.from (user SyncHandler in receive from Publisher)
+        let fileWatcher = FileWatcherOrganizer.getFileManager(for: configuration.from)
+        // let fileWatcherSubscription: AnyCancelable = watcher.sink(receiveCompletion: {...}) {...}
+        
+        // Save both in a data structure
+        configurations.append(SyncItem(configuration: configuration, fileWatcher: fileWatcher))
     }
+    
+    
+    /**
+     Stops the synchronization for an item.
+     
+     - parameters:
+        - item: The `SyncItem` for which the synchronization should be stopped.
+     */
+    func stopSynchronizing(for item: SyncItem) {
+        
+    }
+    // alternative
+    // func stopSynchronizing(for id: String) { }
 }
