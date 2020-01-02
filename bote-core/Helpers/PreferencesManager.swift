@@ -9,7 +9,7 @@
 import Foundation
 
 
-class PreferencesManager: NSObject {
+class PreferencesManager {
     
     private static let configurationsSuiteName = (Bundle.main.bundleIdentifier ?? "de.pascalbraband.bote-core") + ".configurations"
     private static let defaults = UserDefaults.init(suiteName: PreferencesManager.configurationsSuiteName)!

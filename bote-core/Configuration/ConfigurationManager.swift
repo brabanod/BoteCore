@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ConfigurationManager: NSObject {
+class ConfigurationManager {
     
     private (set) var configurations: [Configuration]
     
@@ -20,7 +20,6 @@ class ConfigurationManager: NSObject {
     */
     init?(_: Void) {
         self.configurations = [Configuration]()
-        super.init()
         
         do {
             self.configurations = try load()

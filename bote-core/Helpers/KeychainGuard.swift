@@ -16,7 +16,7 @@ enum KeychainError: Error, Equatable {
 }
 
 
-class KeychainGuard: NSObject {
+class KeychainGuard {
     
     /**
      Add an item to the keychain.
