@@ -11,7 +11,6 @@
 		50038F3B23A450C50030068B /* ConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50038F3923A450C30030068B /* ConfigurationManager.swift */; };
 		5007742823B4CD830089A127 /* PreferencesManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5007742723B4CD830089A127 /* PreferencesManagerTests.swift */; };
 		502EF3A623BB69790005C3EF /* SFTPSyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 502EF3A523BB69790005C3EF /* SFTPSyncHandler.swift */; };
-		502EF3A723BB69790005C3EF /* SFTPSyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 502EF3A523BB69790005C3EF /* SFTPSyncHandler.swift */; };
 		50388C3F23A29BD800AA2F5E /* PreferencesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50388C3E23A29BD800AA2F5E /* PreferencesManager.swift */; };
 		50388C4023A29BD800AA2F5E /* PreferencesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50388C3E23A29BD800AA2F5E /* PreferencesManager.swift */; };
 		50388C4223A2F51D00AA2F5E /* SFTPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50388C4123A2F51D00AA2F5E /* SFTPConnectionTests.swift */; };
@@ -24,12 +23,9 @@
 		505902BA239FBCEA00FB6DB2 /* SFTPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902B9239FBCEA00FB6DB2 /* SFTPConnection.swift */; };
 		505902BB239FBCEA00FB6DB2 /* SFTPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902B9239FBCEA00FB6DB2 /* SFTPConnection.swift */; };
 		505902BC239FBCEF00FB6DB2 /* LocalConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902B6239FBC5A00FB6DB2 /* LocalConnection.swift */; };
-		505902BE239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */; };
-		505902BF239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */; };
 		505902C1239FBFC400FB6DB2 /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902C0239FBFC400FB6DB2 /* FileWatcher.swift */; };
 		505902C2239FBFC400FB6DB2 /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902C0239FBFC400FB6DB2 /* FileWatcher.swift */; };
 		506C4EFF23B1719600AECD13 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506C4EFE23B1719600AECD13 /* ConfigurationTests.swift */; };
-		506C4F0023B171A000AECD13 /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
 		5084A1DD23B0C79600BF618D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5084A1DC23B0C79600BF618D /* Connection.swift */; };
 		5084A1DE23B0C79600BF618D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5084A1DC23B0C79600BF618D /* Connection.swift */; };
 		508FD7A7239F904500E29FD9 /* LocalFileWatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD7A6239F904500E29FD9 /* LocalFileWatcherTests.swift */; };
@@ -52,6 +48,10 @@
 		50CF71C723BE68C20000832D /* SafetyNet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF71C623BE68C20000832D /* SafetyNet.swift */; };
 		50CF71C923BE68E70000832D /* SafetyNet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF71C623BE68C20000832D /* SafetyNet.swift */; };
 		50E58DD723BE9ECE00C5539A /* SafetyNetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E58DD623BE9ECE00C5539A /* SafetyNetTests.swift */; };
+		50E58DD823BEA2D700C5539A /* SyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */; };
+		50E58DD923BEA2E300C5539A /* SyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */; };
+		50E58DDA23BEA2EA00C5539A /* SFTPSyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 502EF3A523BB69790005C3EF /* SFTPSyncHandler.swift */; };
+		50E58DDB23BEA2ED00C5539A /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
 		50FF976923A15913007DF0FE /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976823A15913007DF0FE /* FileHelper.swift */; };
 		50FF976B23A15AC3007DF0FE /* DirectoryCrawlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */; };
 		50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
@@ -376,6 +376,7 @@
 				505902C1239FBFC400FB6DB2 /* FileWatcher.swift in Sources */,
 				50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */,
 				50038F3A23A450C30030068B /* ConfigurationManager.swift in Sources */,
+				50E58DD923BEA2E300C5539A /* SyncOrchestrator.swift in Sources */,
 				50972BC9239F0A8A005C1BBD /* FileEvent.swift in Sources */,
 				50FF978A23A1A8F3007DF0FE /* KeychainGuard.swift in Sources */,
 				50972BC4239F0A68005C1BBD /* LocalFileWatcher.swift in Sources */,
@@ -384,7 +385,6 @@
 				5084A1DD23B0C79600BF618D /* Connection.swift in Sources */,
 				50B7B78C23BE735F00CA00F9 /* String+PathExtensions.swift in Sources */,
 				50388C3F23A29BD800AA2F5E /* PreferencesManager.swift in Sources */,
-				505902BE239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */,
 				50CF71C723BE68C20000832D /* SafetyNet.swift in Sources */,
 				50972BC6239F0A72005C1BBD /* LocalFileWatcherSubscription.swift in Sources */,
 				505902BA239FBCEA00FB6DB2 /* SFTPConnection.swift in Sources */,
@@ -395,6 +395,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50E58DD823BEA2D700C5539A /* SyncOrchestrator.swift in Sources */,
 				5007742823B4CD830089A127 /* PreferencesManagerTests.swift in Sources */,
 				508FD7AA239F936800E29FD9 /* FileEvent.swift in Sources */,
 				5084A1DE23B0C79600BF618D /* Connection.swift in Sources */,
@@ -402,13 +403,12 @@
 				50FF976B23A15AC3007DF0FE /* DirectoryCrawlerTests.swift in Sources */,
 				50E58DD723BE9ECE00C5539A /* SafetyNetTests.swift in Sources */,
 				505902C2239FBFC400FB6DB2 /* FileWatcher.swift in Sources */,
-				502EF3A723BB69790005C3EF /* SFTPSyncHandler.swift in Sources */,
 				505902B5239FBBCF00FB6DB2 /* Configuration.swift in Sources */,
 				50388C4223A2F51D00AA2F5E /* SFTPConnectionTests.swift in Sources */,
 				50388C4523A2F56700AA2F5E /* TestsCommon.swift in Sources */,
 				50FF976923A15913007DF0FE /* FileHelper.swift in Sources */,
+				50E58DDA23BEA2EA00C5539A /* SFTPSyncHandler.swift in Sources */,
 				508FD7AB239F936D00E29FD9 /* DirectoryCrawler.swift in Sources */,
-				505902BF239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */,
 				50038F3B23A450C50030068B /* ConfigurationManager.swift in Sources */,
 				50CF71C923BE68E70000832D /* SafetyNet.swift in Sources */,
 				50B7B78D23BE735F00CA00F9 /* String+PathExtensions.swift in Sources */,
@@ -417,8 +417,8 @@
 				50CF71BB23BE67620000832D /* SFTPSyncHandlerTests.swift in Sources */,
 				508FD7A9239F936000E29FD9 /* LocalFileWatcherSubscription.swift in Sources */,
 				50B7B79123BE757400CA00F9 /* String+PathExtensionsTests.swift in Sources */,
-				506C4F0023B171A000AECD13 /* SyncHandler.swift in Sources */,
 				50388C4623A2F69C00AA2F5E /* KeychainGuard.swift in Sources */,
+				50E58DDB23BEA2ED00C5539A /* SyncHandler.swift in Sources */,
 				50403C2523B8DFDF006B8C9B /* ConfigurationManagerTests.swift in Sources */,
 				505902BB239FBCEA00FB6DB2 /* SFTPConnection.swift in Sources */,
 				506C4EFF23B1719600AECD13 /* ConfigurationTests.swift in Sources */,

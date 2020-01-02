@@ -57,8 +57,8 @@ class SFTPSyncHandlerTests: XCTestCase {
         let f = LocalConnection(path: testsBasepath)
         let t = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
         
-        let syncHandler = SFTPSyncHandler.init(from: f, to: t)
-        syncHandler.upload(path: dirA , isDir: true)
+//        let syncHandler = SFTPSyncHandler.init(from: f, to: t)
+//        try syncHandler.upload(path: dirA , isDir: true)
     }
 
 }

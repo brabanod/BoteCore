@@ -7,14 +7,14 @@
 //
 
 import Foundation
-import Shout
+//import Shout
 
 enum SFTPError: Error {
     case authenticationPasswordFailure, authenticationKeyFailure, connectionFailure, executionFailure, invalidPath
 }
 
 
-class SFTPSyncHandler: SyncHandler {    
+/*class SFTPSyncHandler: SyncHandler {
     
     var status: SyncHandlerStatus
     
@@ -212,4 +212,34 @@ class SFTPSyncHandler: SyncHandler {
             self.terminate()
         })
     }
+}*/
+
+class SFTPSyncHandler: SyncHandler {
+    var status: SyncHandlerStatus
+    
+    required init(from: Connection, to: SFTPConnection) {
+        status = .connected
+    }
+    
+    func upload(path: String, isDir: Bool) throws {
+        
+    }
+    
+    func remove(path: String, isDir: Bool) throws {
+        
+    }
+    
+    func rename(src: String, dst: String) throws {
+        
+    }
+    
+    func connect() throws {
+        
+    }
+    
+    func terminate() {
+        
+    }
+    
+
 }

@@ -25,11 +25,11 @@ let watchPath = "\(NSHomeDirectory())/Desktop/watchDir"
 
 //FileManager.default.createFile(atPath: watchPath+"/myfile.txt", contents: "hello".data(using: .utf8), attributes: nil)
 
-let f = LocalConnection(path: "/Users/pascal/watchDir/")
-let t = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-
-let syncHandler = SFTPSyncHandler.init(from: f, to: t)
-try syncHandler.upload(path: "/Users/pascal/watchDir/asdf.txt" , isDir: true)
+//let f = LocalConnection(path: "/Users/pascal/watchDir/")
+//let t = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+//
+//let syncHandler = SFTPSyncHandler.init(from: f, to: t)
+//try syncHandler.upload(path: "/Users/pascal/watchDir/asdf.txt" , isDir: true)
 
 //RunLoop.main.run()
 print("finished")
