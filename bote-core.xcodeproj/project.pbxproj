@@ -46,6 +46,8 @@
 		50972BCD239F0AB2005C1BBD /* DirectoryCrawler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BCC239F0AB2005C1BBD /* DirectoryCrawler.swift */; };
 		50972BD0239F0AE5005C1BBD /* EonilFSEvents in Frameworks */ = {isa = PBXBuildFile; productRef = 50972BCF239F0AE5005C1BBD /* EonilFSEvents */; };
 		50CF71BB23BE67620000832D /* SFTPSyncHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF71BA23BE67620000832D /* SFTPSyncHandlerTests.swift */; };
+		50CF71C723BE68C20000832D /* SafetyNet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF71C623BE68C20000832D /* SafetyNet.swift */; };
+		50CF71C923BE68E70000832D /* SafetyNet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF71C623BE68C20000832D /* SafetyNet.swift */; };
 		50FF976923A15913007DF0FE /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976823A15913007DF0FE /* FileHelper.swift */; };
 		50FF976B23A15AC3007DF0FE /* DirectoryCrawlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */; };
 		50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
@@ -90,6 +92,7 @@
 		50972BD7239F0C9E005C1BBD /* bote-core-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bote-core-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50972BDB239F0C9E005C1BBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50CF71BA23BE67620000832D /* SFTPSyncHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPSyncHandlerTests.swift; sourceTree = "<group>"; };
+		50CF71C623BE68C20000832D /* SafetyNet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyNet.swift; sourceTree = "<group>"; };
 		50FF976823A15913007DF0FE /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
 		50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryCrawlerTests.swift; sourceTree = "<group>"; };
 		50FF976D23A160A5007DF0FE /* SyncHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncHandler.swift; sourceTree = "<group>"; };
@@ -251,6 +254,7 @@
 			children = (
 				50FF978923A1A8F3007DF0FE /* KeychainGuard.swift */,
 				50388C3E23A29BD800AA2F5E /* PreferencesManager.swift */,
+				50CF71C623BE68C20000832D /* SafetyNet.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -370,6 +374,7 @@
 				5084A1DD23B0C79600BF618D /* Connection.swift in Sources */,
 				50388C3F23A29BD800AA2F5E /* PreferencesManager.swift in Sources */,
 				505902BE239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */,
+				50CF71C723BE68C20000832D /* SafetyNet.swift in Sources */,
 				50972BC6239F0A72005C1BBD /* LocalFileWatcherSubscription.swift in Sources */,
 				505902BA239FBCEA00FB6DB2 /* SFTPConnection.swift in Sources */,
 			);
@@ -393,6 +398,7 @@
 				508FD7AB239F936D00E29FD9 /* DirectoryCrawler.swift in Sources */,
 				505902BF239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */,
 				50038F3B23A450C50030068B /* ConfigurationManager.swift in Sources */,
+				50CF71C923BE68E70000832D /* SafetyNet.swift in Sources */,
 				508FD7A8239F935D00E29FD9 /* LocalFileWatcher.swift in Sources */,
 				50388C4023A29BD800AA2F5E /* PreferencesManager.swift in Sources */,
 				50CF71BB23BE67620000832D /* SFTPSyncHandlerTests.swift in Sources */,
