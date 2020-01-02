@@ -34,9 +34,32 @@ class SafetyNet {
     func intercept(path: String...) throws {
         // Should prevent accidently operating on wrong path in file system
         if path.allSatisfy({ $0.hasPrefix(basePath) }) {
-            return
-        } else {
-            throw SafetyNetError.unauthorized("Operating on unauthorized path: \(path).\n Only operations on \(basePath) are allowed.")
+            // Search for if there is a correct slash set between the two path components
+            if path.allSatisfy({
+                let rest = $0.deletingPrefix(basePath)
+                if rest == "" {
+                    return true
+                } else if rest.first == "/" {
+                    return true
+                } else if basePath.last == "/" {
+                    return true
+                } else {
+                    return false
+                }
+            }) {
+                // Check for illegal characters in the rest component
+                if path.allSatisfy({
+                    let rest = $0.deletingPrefix(basePath)
+                    if rest.contains("..") {
+                        return false
+                    } else {
+                        return true
+                    }
+                }) {
+                    return
+                }
+            }
         }
+        throw SafetyNetError.unauthorized("Operating on unauthorized path: \(path).\n Only operations on \(basePath) are allowed.")
     }
 }
