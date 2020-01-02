@@ -33,7 +33,7 @@ class SafetyNet {
      */
     func intercept(path: String...) throws {
         // Should prevent accidently operating on wrong path in file system
-        if path.allSatisfy({ $0.hasPrefix(testsBasepath) }) {
+        if path.allSatisfy({ $0.hasPrefix(basePath) }) {
             return
         } else {
             throw SafetyNetError.unauthorized("Operating on unauthorized path: \(path).\n Only operations on \(basePath) are allowed.")
