@@ -22,6 +22,10 @@ enum SyncOrchestratorError: Error {
     case FileWatcherInitFailure(String)
 }
 
+enum SyncStatus {
+    case connected, active, failed, inactive
+}
+
 class SyncOrchestrator {
     
     var configurations: [SyncItem]
@@ -44,7 +48,7 @@ class SyncOrchestrator {
         // Setup synchronizing with the given configuration
         
         // Setup SyncHandler for configuration.to
-        guard let syncHandler: SyncHandler = SyncHandlerOrganizer.getSyncHandler(for: configuration.to) else { throw SyncOrchestratorError.SyncHandlerInitFailure("Initialization of SyncHandler failed and returned nil. Unsupported Connection type possible.")}
+        guard let syncHandler: SyncHandler = SyncHandlerOrganizer.getSyncHandler(for: configuration) else { throw SyncOrchestratorError.SyncHandlerInitFailure("Initialization of SyncHandler failed and returned nil. Unsupported Connection type possible.")}
         
         // Setup FileWatcher for configuration.from (user SyncHandler in receive from Publisher)
         guard let fileWatcher = FileWatcherOrganizer.getFileWatcher(for: configuration.from) else { throw SyncOrchestratorError.FileWatcherInitFailure("Initialization of FileWatcher failed. and returned nil. Unsupported Connection type possible.")}

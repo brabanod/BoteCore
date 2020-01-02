@@ -10,10 +10,6 @@ import Foundation
 import Combine
 import EonilFSEvents
 
-enum FileWatcherError: Error {
-    case watchFailed(String)
-}
-
 final class LocalFileWatcherSubscription<SubscriberType: Subscriber>: Subscription where SubscriberType.Input == FileEvent, SubscriberType.Failure == FileWatcherError {
     
     private var subscriber: SubscriberType?

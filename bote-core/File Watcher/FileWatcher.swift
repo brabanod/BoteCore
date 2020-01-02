@@ -9,6 +9,10 @@
 import Foundation
 import Combine
 
+enum FileWatcherError: Error {
+    case watchFailed(String)
+}
+
 typealias FileWatcher = AnyPublisher<FileEvent, FileWatcherError>
 
 

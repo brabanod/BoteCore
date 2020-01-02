@@ -45,13 +45,16 @@
 		50972BC9239F0A8A005C1BBD /* FileEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BC8239F0A8A005C1BBD /* FileEvent.swift */; };
 		50972BCD239F0AB2005C1BBD /* DirectoryCrawler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50972BCC239F0AB2005C1BBD /* DirectoryCrawler.swift */; };
 		50972BD0239F0AE5005C1BBD /* EonilFSEvents in Frameworks */ = {isa = PBXBuildFile; productRef = 50972BCF239F0AE5005C1BBD /* EonilFSEvents */; };
+		50B7B78A23BE6E2900CA00F9 /* Shout in Frameworks */ = {isa = PBXBuildFile; productRef = 50B7B78923BE6E2900CA00F9 /* Shout */; };
+		50B7B78C23BE735F00CA00F9 /* String+PathExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B7B78B23BE735F00CA00F9 /* String+PathExtensions.swift */; };
+		50B7B78D23BE735F00CA00F9 /* String+PathExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B7B78B23BE735F00CA00F9 /* String+PathExtensions.swift */; };
+		50B7B79123BE757400CA00F9 /* String+PathExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B7B79023BE757400CA00F9 /* String+PathExtensionsTests.swift */; };
 		50CF71BB23BE67620000832D /* SFTPSyncHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF71BA23BE67620000832D /* SFTPSyncHandlerTests.swift */; };
 		50CF71C723BE68C20000832D /* SafetyNet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF71C623BE68C20000832D /* SafetyNet.swift */; };
 		50CF71C923BE68E70000832D /* SafetyNet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF71C623BE68C20000832D /* SafetyNet.swift */; };
 		50FF976923A15913007DF0FE /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976823A15913007DF0FE /* FileHelper.swift */; };
 		50FF976B23A15AC3007DF0FE /* DirectoryCrawlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976A23A15AC3007DF0FE /* DirectoryCrawlerTests.swift */; };
 		50FF976E23A160A5007DF0FE /* SyncHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF976D23A160A5007DF0FE /* SyncHandler.swift */; };
-		50FF977123A16368007DF0FE /* Shout in Frameworks */ = {isa = PBXBuildFile; productRef = 50FF977023A16368007DF0FE /* Shout */; };
 		50FF978A23A1A8F3007DF0FE /* KeychainGuard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF978923A1A8F3007DF0FE /* KeychainGuard.swift */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +94,9 @@
 		50972BCC239F0AB2005C1BBD /* DirectoryCrawler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryCrawler.swift; sourceTree = "<group>"; };
 		50972BD7239F0C9E005C1BBD /* bote-core-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bote-core-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50972BDB239F0C9E005C1BBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50B7B78B23BE735F00CA00F9 /* String+PathExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+PathExtensions.swift"; sourceTree = "<group>"; };
+		50B7B79023BE757400CA00F9 /* String+PathExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+PathExtensionsTests.swift"; sourceTree = "<group>"; };
+		50B7B79223BE7C7100CA00F9 /* bote-core.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "bote-core.entitlements"; sourceTree = "<group>"; };
 		50CF71BA23BE67620000832D /* SFTPSyncHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPSyncHandlerTests.swift; sourceTree = "<group>"; };
 		50CF71C623BE68C20000832D /* SafetyNet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyNet.swift; sourceTree = "<group>"; };
 		50FF976823A15913007DF0FE /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
@@ -104,7 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50FF977123A16368007DF0FE /* Shout in Frameworks */,
+				50B7B78A23BE6E2900CA00F9 /* Shout in Frameworks */,
 				50972BD0239F0AE5005C1BBD /* EonilFSEvents in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -161,6 +167,7 @@
 		50972BBB239F0A54005C1BBD /* bote-core */ = {
 			isa = PBXGroup;
 			children = (
+				50B7B79223BE7C7100CA00F9 /* bote-core.entitlements */,
 				50972BBC239F0A54005C1BBD /* main.swift */,
 				505902BD239FBD7900FB6DB2 /* SyncOrchestrator.swift */,
 				50FF976C23A16085007DF0FE /* Sync Handler */,
@@ -228,6 +235,7 @@
 			children = (
 				5007742723B4CD830089A127 /* PreferencesManagerTests.swift */,
 				50FF976823A15913007DF0FE /* FileHelper.swift */,
+				50B7B79023BE757400CA00F9 /* String+PathExtensionsTests.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -254,6 +262,7 @@
 			children = (
 				50FF978923A1A8F3007DF0FE /* KeychainGuard.swift */,
 				50388C3E23A29BD800AA2F5E /* PreferencesManager.swift */,
+				50B7B78B23BE735F00CA00F9 /* String+PathExtensions.swift */,
 				50CF71C623BE68C20000832D /* SafetyNet.swift */,
 			);
 			path = Helpers;
@@ -277,7 +286,7 @@
 			name = "bote-core";
 			packageProductDependencies = (
 				50972BCF239F0AE5005C1BBD /* EonilFSEvents */,
-				50FF977023A16368007DF0FE /* Shout */,
+				50B7B78923BE6E2900CA00F9 /* Shout */,
 			);
 			productName = "bote-core";
 			productReference = 50972BB9239F0A54005C1BBD /* bote-core */;
@@ -332,7 +341,7 @@
 			mainGroup = 50972BB0239F0A54005C1BBD;
 			packageReferences = (
 				50972BCE239F0AE5005C1BBD /* XCRemoteSwiftPackageReference "FSEvents" */,
-				50FF976F23A16368007DF0FE /* XCRemoteSwiftPackageReference "Shout" */,
+				50B7B78823BE6E2900CA00F9 /* XCRemoteSwiftPackageReference "Shout" */,
 			);
 			productRefGroup = 50972BBA239F0A54005C1BBD /* Products */;
 			projectDirPath = "";
@@ -372,6 +381,7 @@
 				50972BBD239F0A54005C1BBD /* main.swift in Sources */,
 				50972BCD239F0AB2005C1BBD /* DirectoryCrawler.swift in Sources */,
 				5084A1DD23B0C79600BF618D /* Connection.swift in Sources */,
+				50B7B78C23BE735F00CA00F9 /* String+PathExtensions.swift in Sources */,
 				50388C3F23A29BD800AA2F5E /* PreferencesManager.swift in Sources */,
 				505902BE239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */,
 				50CF71C723BE68C20000832D /* SafetyNet.swift in Sources */,
@@ -399,10 +409,12 @@
 				505902BF239FBD7900FB6DB2 /* SyncOrchestrator.swift in Sources */,
 				50038F3B23A450C50030068B /* ConfigurationManager.swift in Sources */,
 				50CF71C923BE68E70000832D /* SafetyNet.swift in Sources */,
+				50B7B78D23BE735F00CA00F9 /* String+PathExtensions.swift in Sources */,
 				508FD7A8239F935D00E29FD9 /* LocalFileWatcher.swift in Sources */,
 				50388C4023A29BD800AA2F5E /* PreferencesManager.swift in Sources */,
 				50CF71BB23BE67620000832D /* SFTPSyncHandlerTests.swift in Sources */,
 				508FD7A9239F936000E29FD9 /* LocalFileWatcherSubscription.swift in Sources */,
+				50B7B79123BE757400CA00F9 /* String+PathExtensionsTests.swift in Sources */,
 				506C4F0023B171A000AECD13 /* SyncHandler.swift in Sources */,
 				50388C4623A2F69C00AA2F5E /* KeychainGuard.swift in Sources */,
 				50403C2523B8DFDF006B8C9B /* ConfigurationManagerTests.swift in Sources */,
@@ -531,6 +543,7 @@
 		50972BC1239F0A54005C1BBD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "bote-core/bote-core.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NL97TS4Q9A;
@@ -544,6 +557,7 @@
 		50972BC2239F0A54005C1BBD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "bote-core/bote-core.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NL97TS4Q9A;
@@ -631,7 +645,7 @@
 				minimumVersion = 0.1.5;
 			};
 		};
-		50FF976F23A16368007DF0FE /* XCRemoteSwiftPackageReference "Shout" */ = {
+		50B7B78823BE6E2900CA00F9 /* XCRemoteSwiftPackageReference "Shout" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jakeheis/Shout.git";
 			requirement = {
@@ -652,9 +666,9 @@
 			package = 50972BCE239F0AE5005C1BBD /* XCRemoteSwiftPackageReference "FSEvents" */;
 			productName = EonilFSEvents;
 		};
-		50FF977023A16368007DF0FE /* Shout */ = {
+		50B7B78923BE6E2900CA00F9 /* Shout */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 50FF976F23A16368007DF0FE /* XCRemoteSwiftPackageReference "Shout" */;
+			package = 50B7B78823BE6E2900CA00F9 /* XCRemoteSwiftPackageReference "Shout" */;
 			productName = Shout;
 		};
 /* End XCSwiftPackageProductDependency section */
