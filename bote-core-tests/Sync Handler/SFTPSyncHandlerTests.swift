@@ -36,7 +36,12 @@ class SFTPSyncHandlerTests: XCTestCase {
     }
 
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        removeDir(at: testsBasepath)
+        do {
+            try KeychainGuard.removeItem(user: SFTPServer.user, server: SFTPServer.host)
+        } catch _ {
+            print("NOTE: There was no keychain item to be deleted in teadDown.")
+        }
     }
     
     func testConnectWithKey() {
