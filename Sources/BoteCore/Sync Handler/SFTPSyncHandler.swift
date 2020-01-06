@@ -7,14 +7,14 @@
 //
 
 import Foundation
-//import Shout
+import Shout
 
 enum SFTPError: Error {
     case authenticationPasswordFailure, authenticationKeyFailure, connectionFailure, executionFailure, invalidPath
 }
 
 
-/*class SFTPSyncHandler: SyncHandler {
+class SFTPSyncHandler: SyncHandler {
     
     var status: SyncHandlerStatus
     
@@ -26,8 +26,8 @@ enum SFTPError: Error {
     private let remoteHost: String
     private let remoteUser: String
     
-    private var sshSession: SSH?
-    private var sftpSession: SFTP?
+    var sshSession: SSH?
+    var sftpSession: SFTP?
     
     private let from: Connection
     private let to: SFTPConnection
@@ -40,8 +40,6 @@ enum SFTPError: Error {
     
     
     required init(from: Connection, to: SFTPConnection) {
-        self.status = .connected
-        
         self.remoteHost = to.host
         self.remoteUser = to.user
         self.localBasePath = from.path
@@ -51,8 +49,6 @@ enum SFTPError: Error {
         self.to = to
         
         self.safetyNet = SafetyNet(basePath: self.remoteBasePath)
-        
-        restartConnectionTimer()
     }
     
     
@@ -85,7 +81,11 @@ enum SFTPError: Error {
         try safetyNet.intercept(path: directoryPath)
         
         do {
-            try sftpSession!.createDirectory(directoryPath)
+            // Only create directory if it doesn't already exists
+            if try !directoryExists(at: directoryPath) {
+                print(sftpSession ?? "session is nil")
+                try sftpSession!.createDirectory(directoryPath)
+            }
         } catch {
             throw SFTPError.executionFailure
         }
@@ -96,9 +96,9 @@ enum SFTPError: Error {
         try connect()
         
         if isDir {
-            try removeFile(path: path)
-        } else {
             try removeDir(path: path)
+        } else {
+            try removeFile(path: path)
         }
     }
     
@@ -205,6 +205,29 @@ enum SFTPError: Error {
     
     
     /**
+     Checks whether a direcotry exists on the SFTP server.
+     
+     - parameters:
+        - path: The path to the directory, which should be checked for existance.
+     
+     - returns:
+     A boolean value, indicating whether the requested directory exists on the SFTP server or not.
+     */
+    private func directoryExists(at path: String) throws -> Bool {
+        do {
+            let (status, contents) = try sshSession!.capture("if test -d \(path); then echo \"exists\"; fi")
+            if status == 0, contents.components(separatedBy: "\n")[0] == "exists" {
+                return true
+            } else {
+                return false
+            }
+        } catch {
+            throw SFTPError.executionFailure
+        }
+    }
+    
+    
+    /**
      Restarts the connection timer. Therefore creates a new timer, which terminates the connection after `connectionTime` seconds.
      */
     private func restartConnectionTimer() {
@@ -212,34 +235,4 @@ enum SFTPError: Error {
             self.terminate()
         })
     }
-}*/
-
-class SFTPSyncHandler: SyncHandler {
-    var status: SyncHandlerStatus
-    
-    required init(from: Connection, to: SFTPConnection) {
-        status = .connected
-    }
-    
-    func upload(path: String, isDir: Bool) throws {
-        
-    }
-    
-    func remove(path: String, isDir: Bool) throws {
-        
-    }
-    
-    func rename(src: String, dst: String) throws {
-        
-    }
-    
-    func connect() throws {
-        
-    }
-    
-    func terminate() {
-        
-    }
-    
-
 }
