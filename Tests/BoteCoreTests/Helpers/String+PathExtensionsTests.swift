@@ -19,19 +19,68 @@ class String_PathExtensionsTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testDeleteSuffix() {
-        XCTFail("Implement")
+    func testDeletePrefix() {
+        // delete ex1
+        XCTAssertEqual("this/is/a/test/string".deletingPrefix("this/is/"), "a/test/string")
+        
+        // delete ex2
+        XCTAssertEqual("hellomynameistest".deletingPrefix("hello"), "mynameistest")
+        
+        // delete same character
+        XCTAssertEqual("aaaaaa".deletingPrefix("aa"), "aaaa")
+        
+        // delete repeating pattern
+        XCTAssertEqual("testtesttest".deletingPrefix("test"), "testtest")
+        
+        // delete non existing characters
+        XCTAssertEqual("testtesttest".deletingPrefix("some"), "testtesttest")
+        
+        // delete word, which is in word, but not as prefix
+        XCTAssertEqual("hellomynameistest".deletingPrefix("myname"), "hellomynameistest")
+        
+        // delete non existing space
+        XCTAssertEqual("testtesttest".deletingPrefix(" "), "testtesttest")
     }
 
-    func testDeletePrefix() {
-        XCTFail("Implement")
+    func testDeleteSuffix() {
+        // delete ex1
+        XCTAssertEqual("this/is/a/test/string".deletingSuffix("test/string"), "this/is/a/")
+        
+        // delete ex2
+        XCTAssertEqual("hellomynameistest".deletingSuffix("istest"), "hellomyname")
+        
+        // delete same character
+        XCTAssertEqual("aaaaaa".deletingSuffix("aa"), "aaaa")
+        
+        // delete repeating pattern
+        XCTAssertEqual("testtesttest".deletingSuffix("test"), "testtest")
+        
+        // delete non existing characters
+        XCTAssertEqual("testtesttest".deletingSuffix("some"), "testtesttest")
+        
+        // delete word, which is in word, but not as suffix
+        XCTAssertEqual("hellomynameistest".deletingSuffix("hello"), "hellomynameistest")
+        
+        // delete non existing space
+        XCTAssertEqual("testtesttest".deletingSuffix(" "), "testtesttest")
     }
     
-    func testDeleteEscapeSpaces() {
-        XCTFail("Implement")
+    func testEscapeSpaces() {
+        XCTAssertEqual("this is a test".escapeSpaces(), #"this\ is\ a\ test"#)
+        XCTAssertEqual("this is".escapeSpaces(), #"this\ is"#)
     }
     
     func testDeleteReplacePath() {
-        XCTFail("Implement")
+        let localBasepath = "/local/base/path"
+        let remoteBasepath = "/remote/some/foo"
+        
+        // replacement normal
+        XCTAssertEqual("/local/base/path/with/extensions".replace(localBasePath: localBasepath, with: remoteBasepath), "/remote/some/foo/with/extensions")
+        
+        // replacement empty
+        XCTAssertEqual(localBasepath.replace(localBasePath: localBasepath, with: remoteBasepath), remoteBasepath + "/")
+        
+        // replacement spaces
+        XCTAssertEqual("/local/base/path/with/space extension".replace(localBasePath: localBasepath, with: remoteBasepath), #"/remote/some/foo/with/space\ extension"#)
     }
 }
