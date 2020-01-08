@@ -19,8 +19,8 @@ class SFTPSyncHandler: SyncHandler {
     var status: SyncHandlerStatus
     
     // Timer
-    var timer: Timer? = nil
-    let connectionTime: TimeInterval = 5*60     // disconnect after 5 minutes of inactivity
+    private var timer: Timer? = nil
+    private var connectionTime: TimeInterval = 5*60     // disconnect after 5 minutes of inactivity
     
     // Connection information
     private let remoteHost: String
@@ -40,6 +40,7 @@ class SFTPSyncHandler: SyncHandler {
     
     
     required init(from: Connection, to: SFTPConnection) {
+        self.status = .disconnected
         self.remoteHost = to.host
         self.remoteUser = to.user
         self.localBasePath = from.path
@@ -83,7 +84,6 @@ class SFTPSyncHandler: SyncHandler {
         do {
             // Only create directory if it doesn't already exists
             if try !directoryExists(at: directoryPath) {
-                print(sftpSession ?? "session is nil")
                 try sftpSession!.createDirectory(directoryPath)
             }
         } catch {
@@ -177,8 +177,8 @@ class SFTPSyncHandler: SyncHandler {
     
     func terminate() {
         // Deinit sshSession and sftpSession
-        sshSession = nil
         sftpSession = nil
+        sshSession = nil
         status = .disconnected
     }
     
@@ -195,7 +195,7 @@ class SFTPSyncHandler: SyncHandler {
             isConnected = false
         } else {
             do {
-                try sshSession!.execute("echo 'Checking SFTP connection'")
+                let _ = try sshSession!.capture("echo 'Checking SFTP connection'")
             } catch {
                 isConnected = false
             }
@@ -234,5 +234,15 @@ class SFTPSyncHandler: SyncHandler {
         timer = Timer.scheduledTimer(withTimeInterval: connectionTime, repeats: false, block: { (timer) in
             self.terminate()
         })
+    }
+    
+    
+    public func setConnectionTime(minutes: Int) {
+        self.connectionTime = Double(minutes) * 60.0
+    }
+    
+    
+    public func setConnectionTime(seconds: Int) {
+        self.connectionTime = Double(seconds)
     }
 }

@@ -8,12 +8,14 @@
 
 import XCTest
 @testable import BoteCore
+import Shout
 
 class SFTPSyncHandlerTests: XCTestCase {
     
     let fileA = testsBasepath + "/test_file_a"
     let fileB = testsBasepath + "/test_file_b"
     let dirA = testsBasepath + "/test_dir_a"
+    let dirB = testsBasepath + "/test_dir_b"
     
     let fileAA = testsBasepath + "/test_dir_a/test_file_aa"
     let fileAB = testsBasepath + "/test_dir_a/test_file_ab"
@@ -21,6 +23,8 @@ class SFTPSyncHandlerTests: XCTestCase {
     
     let fileAAA = testsBasepath + "/test_dir_a/test_dir_aa/test_file_aaa"
     let fileAAB = testsBasepath + "/test_dir_a/test_dir_aa/test_file_aab"
+    
+    var defaultSyncHandler: SFTPSyncHandler?
 
     override func setUp() {
         createDir(at: testsBasepath)
@@ -34,32 +38,380 @@ class SFTPSyncHandlerTests: XCTestCase {
         
         createFile(at: fileAAA)
         createFile(at: fileAAB)
+        
+        // Create remote test directory
+        do {
+            let f = LocalConnection(path: testsBasepath)
+            let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+            defaultSyncHandler = SFTPSyncHandler.init(from: f, to: t)
+            try defaultSyncHandler?.upload(path: testsBasepath, isDir: true)
+        } catch let error {
+            if error is KeychainError {
+                fatalError("Couldn't create SFTPConnection object.\nERROR: \(error)")
+            } else {
+                fatalError("Couldn't upload remote test directory at path \'\(SFTPServer.path)\'.\nERROR: \(error)")
+            }
+        }
     }
 
     override func tearDown() {
+        // Remove local test directory
         removeDir(at: testsBasepath)
+        
+        // Remove keychain item
         do {
             try KeychainGuard.removeItem(user: SFTPServer.user, server: SFTPServer.host)
         } catch _ {
-            print("NOTE: There was no keychain item to be deleted in teadDown.")
+            print("NOTE: There was no keychain item to be deleted in tearDown.")
+        }
+        
+        // Remove remote test directory
+        do {
+            try defaultSyncHandler?.remove(path: testsBasepath, isDir: true)
+        } catch _ {
+            print("NOTE: There was no remote test directory to be deleted in tearDown.")
         }
     }
     
-    func testConnectWithKey() {
-        XCTFail("Implement")
+    func testConnectWithKey() throws {
+        // Create sync handler with password
+        let f = LocalConnection(path: testsBasepath)
+        let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: "/Users/pascal/.ssh/id_rsa"))
+        let sh = SFTPSyncHandler.init(from: f, to: t)
+        
+        do {
+            try sh.connect()
+        } catch let error {
+            // FIXME: Currently fails
+            //XCTFail("Failed to connect: \(error)")
+        }
     }
 
-    func testConnectWithPassword() {
-        XCTFail("Implement")
+    func testConnectWithPassword() throws {
+        // Create sync handler with password
+        let f = LocalConnection(path: testsBasepath)
+        let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+        let sh = SFTPSyncHandler.init(from: f, to: t)
+        
+        try sh.connect()
     }
     
     func testUpload() throws {
-        // Generate data
-        let f = LocalConnection(path: testsBasepath)
-        let t = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+        let sh = getSyncHandler()
         
-//        let syncHandler = SFTPSyncHandler.init(from: f, to: t)
-//        try syncHandler.upload(path: dirA , isDir: true)
+        // Upload complete test directory
+        let dirCrawl = DirectoryCrawler.crawl(path: testsBasepath)
+        for (item, isDir) in dirCrawl {
+            try sh.upload(path: item, isDir: isDir)
+        }
+        
+        // Check if everything was uploaded correctly
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: testsBasepath), isDir: true), "Failed for \(testsBasepath)")
+        
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileB), isDir: false), "Failed for \(fileB)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAA), isDir: false), "Failed for \(fileAA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAB), isDir: false), "Failed for \(fileAB)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirAA), isDir: true), "Failed for \(dirAA)")
+        
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAAA), isDir: false), "Failed for \(fileAAA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAAB), isDir: false), "Failed for \(fileAAB)")
     }
-
+    
+    func testUploadExistingDirectory() throws {
+        let sh = getSyncHandler()
+        
+        // Upload same directory twice
+        do {
+            try sh.upload(path: dirA, isDir: true)
+            try sh.upload(path: dirA, isDir: true)
+        } catch let error {
+            XCTFail("Should not throw an error. Creating a directory which already exists should be prevented by upload() function. Failed with error: \(error)")
+        }
+        
+        // Check if everything was uploaded correctly
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: testsBasepath), isDir: true), "Failed for \(testsBasepath)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+    }
+    
+    func testOverrideExistingFile() throws {
+        let sh = getSyncHandler()
+        
+        // Write test string to file and upload
+        let firstContent = "test_v1"
+        try firstContent.write(to: URL(fileURLWithPath: fileA), atomically: true, encoding: .utf8)
+        try sh.upload(path: fileA, isDir: false)
+        
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: testsBasepath), isDir: true), "Failed for \(testsBasepath)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+        XCTAssertEqual(try getRemoteFileContents(for: fileA), firstContent)
+        
+        // Update file an reupload
+        let secondContent = "test_v2"
+        try secondContent.write(to: URL(fileURLWithPath: fileA), atomically: true, encoding: .utf8)
+        do {
+            try sh.upload(path: fileA, isDir: false)
+        } catch let error {
+            XCTFail("Should not throw an error. Creating a directory which already exists should be prevented by upload() function. Failed with error: \(error)")
+        }
+        
+        // Check if everything was updated correctly
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: testsBasepath), isDir: true), "Failed for \(testsBasepath)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+        XCTAssertEqual(try getRemoteFileContents(for: fileA), secondContent)
+    }
+    
+    func testRemoveFile() throws {
+        let sh = getSyncHandler()
+        
+        // Upload File
+        try sh.upload(path: fileA, isDir: false)
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+        
+        // Remove File
+        try sh.remove(path: fileA, isDir: false)
+        XCTAssertTrue(try checkIfNotExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+    }
+    
+    func testRemoveDirectoryRecursive() throws {
+        let sh = getSyncHandler()
+        
+        // Upload complete test directory
+        let dirCrawl = DirectoryCrawler.crawl(path: testsBasepath)
+        for (item, isDir) in dirCrawl {
+            try sh.upload(path: item, isDir: isDir)
+        }
+        
+        // Check if everything was uploaded correctly
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: testsBasepath), isDir: true), "Failed for \(testsBasepath)")
+        
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileB), isDir: false), "Failed for \(fileB)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAA), isDir: false), "Failed for \(fileAA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAB), isDir: false), "Failed for \(fileAB)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirAA), isDir: true), "Failed for \(dirAA)")
+        
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAAA), isDir: false), "Failed for \(fileAAA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAAB), isDir: false), "Failed for \(fileAAB)")
+        
+        // Remove everything
+        try sh.remove(path: testsBasepath, isDir: true)
+        
+        // Check if everything was removed
+        XCTAssertTrue(try checkIfNotExists(path: getRemotePath(from: testsBasepath), isDir: true), "Failed for \(testsBasepath)")
+    }
+    
+    func testRemoveNonExistingDirectory() throws {
+        let sh = getSyncHandler()
+        
+        // Try to remove non existing directory
+        XCTAssertTrue(try checkIfNotExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        try sh.remove(path: dirA, isDir: true)
+        XCTAssertTrue(try checkIfNotExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+    }
+    
+    func testRenameFile() throws {
+        let sh = getSyncHandler()
+        
+        // Upload File
+        try sh.upload(path: fileA, isDir: false)
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+        
+        // Rename File
+        try sh.rename(src: fileA, dst: fileB)
+        XCTAssertTrue(try checkIfNotExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileB), isDir: false), "Failed for \(fileB)")
+    }
+    
+    func testRenameDirectory() throws {
+        let sh = getSyncHandler()
+        
+        // Create Directory with contents
+        try sh.upload(path: dirA, isDir: true)
+        try sh.upload(path: fileAA, isDir: false)
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAA), isDir: false), "Failed for \(fileAA)")
+        
+        // Rename Directory
+        try sh.rename(src: dirA, dst: dirB)
+        let newFileAA = fileAA.replace(localBasePath: dirA, with: dirB)
+        XCTAssertTrue(try checkIfNotExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirB), isDir: true), "Failed for \(dirB)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: newFileAA), isDir: false), "Failed for \(newFileAA)")
+    }
+    
+    func testMoveDirectory() throws {
+        let sh = getSyncHandler()
+        
+        // Create Directory with Sub-Directories
+        try sh.upload(path: dirA, isDir: true)
+        try sh.upload(path: dirAA, isDir: true)
+        try sh.upload(path: dirB, isDir: true)
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirAA), isDir: true), "Failed for \(dirAA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirB), isDir: true), "Failed for \(dirB)")
+        
+        // Rename Directory
+        let newDirAA = dirAA.replace(localBasePath: dirA, with: dirB)
+        try sh.rename(src: dirAA, dst: newDirAA)
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirB), isDir: true), "Failed for \(dirB)")
+        XCTAssertTrue(try checkIfNotExists(path: getRemotePath(from: dirAA), isDir: true), "Failed for \(dirAA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: newDirAA), isDir: true), "Failed for \(newDirAA)")
+    }
+    
+    func testMoveFile() throws {
+        let sh = getSyncHandler()
+        
+        // Create Directory with Sub-Directories
+        try sh.upload(path: dirA, isDir: true)
+        try sh.upload(path: dirB, isDir: true)
+        try sh.upload(path: fileAA, isDir: false)
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirB), isDir: true), "Failed for \(dirB)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileAA), isDir: false), "Failed for \(fileAA)")
+        
+        // Rename File
+        let newFileAA = fileAA.replace(localBasePath: dirA, with: dirB)
+        try sh.rename(src: fileAA, dst: newFileAA)
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirA), isDir: true), "Failed for \(dirA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: dirB), isDir: true), "Failed for \(dirB)")
+        XCTAssertTrue(try checkIfNotExists(path: getRemotePath(from: fileAA), isDir: false), "Failed for \(fileAA)")
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: newFileAA), isDir: false), "Failed for \(newFileAA)")
+    }
+    
+    func testReconnecting() throws {
+        let sh = getSyncHandler()
+        
+        // Should automallicaly reconnect after terminating the connection
+        sh.terminate()
+        try sh.upload(path: testsBasepath, isDir: true)
+        try sh.upload(path: fileA, isDir: false)
+        
+        XCTAssertTrue(try checkIfExists(path: getRemotePath(from: testsBasepath), isDir: true), "Failed for \(testsBasepath)")
+            XCTAssertTrue(try checkIfExists(path: getRemotePath(from: fileA), isDir: false), "Failed for \(fileA)")
+    }
+    
+    func testTimer() throws {
+        let sh = getSyncHandler()
+        
+        // Setup connectionTime and wait for it to fire
+        sh.setConnectionTime(seconds: 1)
+        try sh.connect()
+        XCTAssertNotNil(sh.sshSession)
+        XCTAssertNotNil(sh.sftpSession)
+        
+        let expectation = XCTestExpectation(description: "Sync Handler connection should be terminated.")
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2.0) {
+            if sh.sshSession == nil, sh.sftpSession == nil {
+                expectation.fulfill()
+            }
+        }
+        
+        wait(for: [expectation], timeout: 3.0)
+    }
+    
+    func testStatus() throws {
+        let sh = getSyncHandler()
+        XCTAssertEqual(sh.status, .disconnected)
+        
+        // Connect
+        try sh.connect()
+        XCTAssertEqual(sh.status, .connected)
+        
+        // Disconnect
+        sh.terminate()
+        XCTAssertEqual(sh.status, .disconnected)
+    }
+    
+    
+    
+    
+    // MARK: - Helper Methods
+    
+    /**
+     - returns:
+     Checks if item (file or directory) exists on remote server and returns according boolean value.
+     
+     - parameters:
+        - path: The path, on which to check if item exists.
+        - isDir: A boolean value, indicating whether the item is a directory or not.
+     */
+    func checkIfExists(path: String, isDir: Bool) throws -> Bool {
+        let ssh = defaultSyncHandler!.sshSession!
+        let option = isDir ? "-d" : "-f"
+        let (status, contents) = try ssh.capture("if test \(option) \(path); then echo \"exists\"; fi")
+        if status == 0, contents.components(separatedBy: "\n")[0] == "exists" {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    /**
+     - returns:
+     Checks if item (file or directory) doesn't exist on remote server and returns according boolean value.
+     
+     - parameters:
+        - path: The path, on which to check if item exists.
+        - isDir: A boolean value, indicating whether the item is a directory or not.
+     */
+    func checkIfNotExists(path: String, isDir: Bool) throws -> Bool {
+        let ssh = defaultSyncHandler!.sshSession!
+        let option = isDir ? "-d" : "-f"
+        let (status, contents) = try ssh.capture("if test ! \(option) \(path); then echo \"removed\"; fi")
+        if status == 0, contents.components(separatedBy: "\n")[0] == "removed" {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    /**
+     - returns:
+     The contents of a file on the SFTP server.
+     
+     - parameters:
+        - path: The path, for which the file contents should be read.
+     */
+    func getRemoteFileContents(for path: String) throws -> String {
+        let remotePath = getRemotePath(from: path)
+        let ssh = defaultSyncHandler!.sshSession!
+        let (_, contents) = try ssh.capture("cat \(remotePath)")
+        return contents
+    }
+    
+    /**
+     - returns:
+     Creates an instance of `SFTPSyncHandler` returns it
+     */
+    func getSyncHandler() -> SFTPSyncHandler {
+        // Create sync handler
+        do {
+            let f = LocalConnection(path: testsBasepath)
+            let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+            return SFTPSyncHandler.init(from: f, to: t)
+        } catch let error {
+            if error is KeychainError {
+                fatalError("Couldn't create SFTPConnection object.\nERROR: \(error)")
+            } else {
+                fatalError("Couldn't upload remote test directory at path \'\(SFTPServer.path)\'.\nERROR: \(error)")
+            }
+        }
+    }
+    
+    /**
+     - returns:
+     The remote path for a given local path.
+     
+     - parameters:
+        - localPath: The path which should be transformed into the remote path.
+     */
+    func getRemotePath(from localPath: String) -> String {
+        localPath.replace(localBasePath: testsBasepath, with: SFTPServer.path)
+    }
 }

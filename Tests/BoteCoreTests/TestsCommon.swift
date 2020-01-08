@@ -14,6 +14,7 @@ let testsBasepath = "/private/tmp/bote-core-tests"
 
 
 struct SFTPServer {
+    static let path = "/home/pi/bote-core-tests"
     static let host = "192.168.193"
     static let port: Int? = nil
     static let user = "pi"

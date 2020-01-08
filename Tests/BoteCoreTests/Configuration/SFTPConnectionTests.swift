@@ -19,7 +19,7 @@ class SFTPConnectionTests: XCTestCase {
         do {
             try KeychainGuard.removeItem(user: SFTPServer.user, server: SFTPServer.host)
         } catch _ {
-            print("NOTE: There was no keychain item to be deleted in teadDown.")
+            print("NOTE: There was no keychain item to be deleted in tearDown.")
         }
     }
     
