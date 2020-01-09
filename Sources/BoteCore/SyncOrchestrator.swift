@@ -13,12 +13,12 @@ struct SyncItem {
     let configuration: Configuration
     let fileWatcher: FileWatcher
     let fileWatcherSubscription: AnyCancellable
-    let syncHandler: SyncHandler
+    let transferHandler: TransferHandler
     var id: String { return self.configuration.id }
 }
 
 enum SyncOrchestratorError: Error {
-    case SyncHandlerInitFailure(String)
+    case TransferHandlerInitFailure(String)
     case FileWatcherInitFailure(String)
 }
 
@@ -47,10 +47,10 @@ class SyncOrchestrator {
     public func startSynchronizing(with configuration: Configuration) throws {
         // Setup synchronizing with the given configuration
         
-        // Setup SyncHandler for configuration.to
-        guard let syncHandler: SyncHandler = SyncHandlerOrganizer.getSyncHandler(for: configuration) else { throw SyncOrchestratorError.SyncHandlerInitFailure("Initialization of SyncHandler failed and returned nil. Unsupported Connection type possible.")}
+        // Setup TransferHandler for configuration.to
+        guard let transferHandler: TransferHandler = TransferHandlerOrganizer.getTransferHandler(for: configuration) else { throw SyncOrchestratorError.TransferHandlerInitFailure("Initialization of TransferHandler failed and returned nil. Unsupported Connection type possible.")}
         
-        // Setup FileWatcher for configuration.from (user SyncHandler in receive from Publisher)
+        // Setup FileWatcher for configuration.from (use TransferHandler in receive from Publisher)
         guard let fileWatcher = FileWatcherOrganizer.getFileWatcher(for: configuration.from) else { throw SyncOrchestratorError.FileWatcherInitFailure("Initialization of FileWatcher failed. and returned nil. Unsupported Connection type possible.")}
         let fileWatcherSubscription = fileWatcher.sink(receiveCompletion: { (completion) in
             switch completion {
@@ -64,7 +64,7 @@ class SyncOrchestrator {
         }
         
         // Save both in a data structure
-        configurations.append(SyncItem(configuration: configuration, fileWatcher: fileWatcher, fileWatcherSubscription: fileWatcherSubscription, syncHandler: syncHandler))
+        configurations.append(SyncItem(configuration: configuration, fileWatcher: fileWatcher, fileWatcherSubscription: fileWatcherSubscription, transferHandler: transferHandler))
     }
     
     

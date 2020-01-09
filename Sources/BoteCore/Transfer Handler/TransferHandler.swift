@@ -1,5 +1,5 @@
 //
-//  SyncHandler.swift
+//  TransferHandler.swift
 //  bote-core
 //
 //  Created by Pascal Braband on 11.12.19.
@@ -9,17 +9,17 @@
 
 import Foundation
 
-enum SyncHandlerStatus {
+enum TransferHandlerStatus {
     case connected, disconnected
 }
 
 
-protocol SyncHandler {
+protocol TransferHandler {
     
-    var status: SyncHandlerStatus { get }
+    var status: TransferHandlerStatus { get }
     
     /**
-     Initializes the `SyncHandler`.
+     Initializes the `TransferHandler`.
      
      - parameters:
         - from: The `Connection` object, from which files should be transferred.
@@ -72,21 +72,21 @@ protocol SyncHandler {
 
 
 
-class SyncHandlerOrganizer {
+class TransferHandlerOrganizer {
     
     /**
-     Returns the correct `SyncHandler` for a given `Connection`.
+     Returns the correct `TransferHandler` for a given `Connection`.
      
      - parameters:
-        - connection: The `Connection`, for which the `SyncHandler` should be configured.
+        - connection: The `Connection`, for which the `TransferHandler` should be configured.
      */
-    static func getSyncHandler(for configuration: Configuration) -> SyncHandler? {
+    static func getTransferHandler(for configuration: Configuration) -> TransferHandler? {
         switch configuration.to.type {
 //        case .local:
-//            return LocalSyncHandler.init(connection: connection)
+//            return LocalTransferHandler.init(connection: connection)
         case .sftp:
             if configuration.to is SFTPConnection {
-                return SFTPSyncHandler(from: configuration.from, to: (configuration.to as! SFTPConnection))
+                return SFTPTransferHandler(from: configuration.from, to: (configuration.to as! SFTPConnection))
             } else {
                 return nil
             }

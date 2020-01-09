@@ -1,5 +1,5 @@
 //
-//  SFTPSyncHandler.swift
+//  SFTPTransferHandler.swift
 //  bote-core
 //
 //  Created by Pascal Braband on 31.12.19.
@@ -14,9 +14,9 @@ enum SFTPError: Error {
 }
 
 
-class SFTPSyncHandler: SyncHandler {
+class SFTPTransferHandler: TransferHandler {
     
-    var status: SyncHandlerStatus
+    var status: TransferHandlerStatus
     
     // Timer
     private var timer: Timer? = nil
