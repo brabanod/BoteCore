@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum SFTPAuthentication: Equatable {
+public enum SFTPAuthentication: Equatable {
     case password(value: String)
     case key(path: String)
 }
@@ -19,7 +19,7 @@ enum SFTPAuthentication: Equatable {
  `.password(value: String)` in `authentication` is will not be saved and is only for initializing.
  If you want to access the password
  */
-struct SFTPConnection: Connection {
+public struct SFTPConnection: Connection {
     let type: ConnectionType = ConnectionType.sftp
     
     var path: String

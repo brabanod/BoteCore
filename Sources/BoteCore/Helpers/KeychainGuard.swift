@@ -9,7 +9,7 @@
 import Foundation
 import Security
 
-enum KeychainError: Error, Equatable {
+public enum KeychainError: Error, Equatable {
     case itemNotFound
     case unexpectedPasswordData
     case unhandledError(status: OSStatus)

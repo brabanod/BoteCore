@@ -14,7 +14,7 @@ enum TransferHandlerStatus {
 }
 
 
-protocol TransferHandler {
+public protocol TransferHandler {
     
     var status: TransferHandlerStatus { get }
     

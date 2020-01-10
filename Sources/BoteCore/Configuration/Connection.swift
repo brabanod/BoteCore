@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol Connection: Codable {
+public protocol Connection: Codable {
     var type: ConnectionType { get }
     var path: String { get set }
     
@@ -19,7 +19,7 @@ protocol Connection: Codable {
 }
 
 
-enum ConnectionType : Int, Codable {
+public enum ConnectionType : Int, Codable {
     case local
     case sftp
 

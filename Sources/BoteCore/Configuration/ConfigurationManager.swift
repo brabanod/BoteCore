@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ConfigurationManager {
+public class ConfigurationManager {
     
     private (set) var configurations: [Configuration]
     

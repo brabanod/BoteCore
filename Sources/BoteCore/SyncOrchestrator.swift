@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-struct SyncItem {
+public struct SyncItem {
     let configuration: Configuration
     let fileWatcher: FileWatcher
     let fileWatcherSubscription: AnyCancellable
@@ -17,17 +17,17 @@ struct SyncItem {
     var id: String { return self.configuration.id }
 }
 
-enum SyncOrchestratorError: Error {
+public enum SyncOrchestratorError: Error {
     case TransferHandlerInitFailure(String)
     case FileWatcherInitFailure(String)
     case ConfigurationDuplicate
 }
 
-enum SyncStatus {
+public enum SyncStatus {
     case connected, active, failed, inactive
 }
 
-class SyncOrchestrator {
+public class SyncOrchestrator {
     
     var configurations: [SyncItem]
     

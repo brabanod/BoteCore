@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Configuration {
+public struct Configuration {
     var from: Connection
     var to: Connection
     

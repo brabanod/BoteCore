@@ -9,11 +9,11 @@
 import Foundation
 import Combine
 
-enum FileWatcherError: Error {
+public enum FileWatcherError: Error {
     case watchFailed(String)
 }
 
-typealias FileWatcher = AnyPublisher<FileEvent, FileWatcherError>
+public typealias FileWatcher = AnyPublisher<FileEvent, FileWatcherError>
 
 
 class FileWatcherOrganizer {

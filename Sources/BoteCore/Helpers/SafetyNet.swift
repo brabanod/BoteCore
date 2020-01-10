@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum SafetyNetError: Error {
+public enum SafetyNetError: Error {
     case unauthorized(String)
 }
 
