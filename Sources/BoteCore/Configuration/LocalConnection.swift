@@ -9,9 +9,9 @@
 import Foundation
 
 public struct LocalConnection: Connection {
-    let type: ConnectionType = ConnectionType.local
+    public let type: ConnectionType = ConnectionType.local
     
-    var path: String
+    public var path: String
     
-    func remove() { }
+    public func remove() { }
 }

@@ -9,7 +9,7 @@
 
 import Foundation
 
-enum TransferHandlerStatus {
+public enum TransferHandlerStatus {
     case connected, disconnected
 }
 

@@ -20,9 +20,9 @@ public enum SFTPAuthentication: Equatable {
  If you want to access the password
  */
 public struct SFTPConnection: Connection {
-    let type: ConnectionType = ConnectionType.sftp
+    public let type: ConnectionType = ConnectionType.sftp
     
-    var path: String
+    public var path: String
     var port: Int?
     private(set) var host: String
     private(set) var authentication: SFTPAuthentication
@@ -211,7 +211,7 @@ public struct SFTPConnection: Connection {
     
     // MARK: - Remove
     
-    func remove() {
+    public func remove() {
         removePassword()
     }
 }
@@ -234,7 +234,7 @@ extension SFTPAuthentication: Codable {
     }
     
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         let type = try container.decode(SFTPAuthenticationType.self, forKey: .type)
@@ -251,7 +251,7 @@ extension SFTPAuthentication: Codable {
     }
     
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         
         switch self {

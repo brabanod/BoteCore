@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum FileEvent: Equatable {
+public enum FileEvent: Equatable {
     case createdFile(path: String)
     case createdDir(path: String)
     case renamed(src: String, dst: String)
