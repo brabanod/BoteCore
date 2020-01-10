@@ -136,7 +136,7 @@ class SyncOrchestrator {
     
     
     private func existsSyncItem(for configuration: Configuration) -> Bool {
-        if let index = configurations.firstIndex(where: { $0.configuration.id = configuration.id }) {
+        if let _ = configurations.firstIndex(where: { $0.configuration.id == configuration.id }) {
             return true
         } else {
             return false
