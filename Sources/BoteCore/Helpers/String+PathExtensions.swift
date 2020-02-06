@@ -29,8 +29,8 @@ extension String {
         // Then append the rest to remoteBasePath return it
         let pathComponent = self.replacingOccurrences(of: localBasePath, with: "")
         
-        let remotePath = remoteBasePath.deletingSuffix("/").escapeSpaces()
-        let filePath = pathComponent.deletingPrefix("/").escapeSpaces()
+        let remotePath = remoteBasePath.deletingSuffix("/")
+        let filePath = pathComponent.deletingPrefix("/")
 
         return remotePath + "/" + filePath
     }

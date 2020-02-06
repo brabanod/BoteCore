@@ -116,7 +116,7 @@ class SFTPTransferHandler: TransferHandler {
     
     
     private func removeDir(path: String) throws {
-        let removePath = path.replace(localBasePath: localBasePath, with: remoteBasePath)
+        let removePath = path.replace(localBasePath: localBasePath, with: remoteBasePath).escapeSpaces()
         try safetyNet.intercept(path: removePath)
         
         do {
