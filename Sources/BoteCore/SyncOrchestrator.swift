@@ -9,12 +9,33 @@
 import Foundation
 import Combine
 
-public struct SyncItem {
+public class SyncItem {
     let configuration: Configuration
-    let fileWatcher: FileWatcher
-    let fileWatcherSubscription: AnyCancellable
-    let transferHandler: TransferHandler
+    var fileWatcher: FileWatcher?
+    var transferHandler: TransferHandler?
     var id: String { return self.configuration.id }
+    @Published var status: SyncStatus
+    
+    var fileWatcherSubscription: AnyCancellable?
+    var statusSubscription: AnyCancellable?
+    var statusPublisher: Published<SyncStatus>.Publisher { $status }
+    
+    
+    init(configuration: Configuration, status: SyncStatus) {
+        self.configuration = configuration
+        self.status = status
+    }
+    
+    
+    init(configuration: Configuration, fileWatcher: FileWatcher?, transferHandler: TransferHandler?, status: SyncStatus, fileWatcherSubscription: AnyCancellable?, statusSubscription: AnyCancellable?) {
+        self.configuration = configuration
+        self.fileWatcher = fileWatcher
+        self.transferHandler = transferHandler
+        self.status = status
+        
+        self.fileWatcherSubscription = fileWatcherSubscription
+        self.statusSubscription = statusSubscription
+    }
 }
 
 public enum SyncOrchestratorError: Error {
@@ -27,14 +48,52 @@ public enum SyncStatus {
     case connected, active, failed, inactive
 }
 
+
+/**
+ Usage:
+ Register new configurations with the `register` method. This loads a new configuration into the SyncOrchestrator. Syncornization for loaded configurations can be started and stoppen using `startSynchronization` and `stopSynchronization`.*/
 public class SyncOrchestrator {
     
-    var configurations: [SyncItem]
+    var syncItems: [SyncItem]
     
-    init(configurations: [Configuration], errorHandler: @escaping(Configuration, Error) -> ()) throws {
-        self.configurations = [SyncItem]()
+    init() {
+        syncItems = [SyncItem]()
+    }
+    
+    init(configurations: [Configuration], errorHandler: @escaping(SyncItem, Error) -> ()) throws {
+        self.syncItems = [SyncItem]()
         for configuration in configurations {
-            try startSynchronizing(with: configuration, errorHandler: errorHandler)
+            let item = try register(configuration: configuration)
+            try startSynchronizing(for: item, errorHandler: errorHandler)
+        }
+    }
+    
+    
+    /**
+     Load a new configuration into the `SyncOrchestrator`, a new `SyncItem` will be created. The status of new items is always `.inactive`.
+     
+     - parameters:
+        - configuration: The `Configuration` object, which should be loaded.
+     */
+    public func register(configuration: Configuration) throws -> SyncItem {
+        if existsSyncItem(for: configuration) {
+            throw SyncOrchestratorError.ConfigurationDuplicate
+        }
+        let item = SyncItem(configuration: configuration, status: .inactive)
+        syncItems.append(item)
+        return item
+    }
+    
+    
+    /**
+     Remove a configuration from the `SyncOrchestrator`.
+     
+     - parameters:
+        - configuration: The `Configuration` object, which should be removed.
+     */
+    public func unregister(configuration: Configuration) {
+        if let index = findIndex(for: configuration) {
+            syncItems.remove(at: index)
         }
     }
     
@@ -45,11 +104,8 @@ public class SyncOrchestrator {
      - parameters:
         - configuration: The configuration, for which a synchronization should be started.
      */
-    public func startSynchronizing(with configuration: Configuration, errorHandler: @escaping (Configuration, Error) -> ()) throws {
-        // Only ONE SyncItem per Configuration is allowed. Check if SyncItem already exists for this Configuration
-        if existsSyncItem(for: configuration) {
-            throw SyncOrchestratorError.ConfigurationDuplicate
-        }
+    public func startSynchronizing(for item: SyncItem, errorHandler: @escaping (SyncItem, Error) -> ()) throws {
+        let configuration = item.configuration
         
         // Setup synchronizing with the given configuration
         
@@ -60,15 +116,17 @@ public class SyncOrchestrator {
         // Setup FileWatcher for configuration.from (use TransferHandler in receive from Publisher)
         guard let fileWatcher = FileWatcherOrganizer.getFileWatcher(for: configuration.from)
             else { throw SyncOrchestratorError.FileWatcherInitFailure("Initialization of FileWatcher failed. and returned nil. Unsupported Connection type possible.") }
+        
+        // Subscribe to FileWatcher
         let fileWatcherSubscription = fileWatcher.sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
-                print("Finished watching")
                 let error = FileWatcherError.watchFailed("File watcher unexpectedly finished publishing file events.")
-                errorHandler(configuration, error)
+                errorHandler(item, error)
+                item.status = .failed
             case .failure(let error):
-                print("Error watching: \(error)")
-                errorHandler(configuration, error)
+                errorHandler(item, error)
+                item.status = .failed
             }
         }) { (event) in
             // call transferHandler method for given events
@@ -87,12 +145,35 @@ public class SyncOrchestrator {
                 }
             } catch let error {
                 // submit error to external errorHandler
-                errorHandler(configuration, error)
+                errorHandler(item, error)
+                item.status = .failed
             }
         }
         
-        // Save both in a data structure
-        configurations.append(SyncItem(configuration: configuration, fileWatcher: fileWatcher, fileWatcherSubscription: fileWatcherSubscription, transferHandler: transferHandler))
+        // Save TransferHandler, FileWatcher and FileWatcherSubscription in SyncItem. Update status
+        item.transferHandler = transferHandler
+        item.fileWatcher = fileWatcher
+        item.fileWatcherSubscription = fileWatcherSubscription
+        item.status = .active
+        
+        // Receive status from TransferHandler
+        item.statusSubscription = transferHandler.statusPublisher.sink { (status) in
+            switch status {
+            case .connected:
+                item.status = .connected
+            case .disconnected:
+                switch item.status {
+                case .connected:
+                    item.status = .active
+                case .active:
+                    item.status = .active
+                case .inactive:
+                    item.status = .inactive
+                case .failed:
+                    item.status = .failed
+                }
+            }
+        }
     }
     
     
@@ -115,9 +196,8 @@ public class SyncOrchestrator {
     */
     public func stopSynchronizing(for id: String) {
         // Determine SyncItem in list by Configuration.id
-        if let index = configurations.firstIndex(where: { $0.configuration.id == id }) {
-            configurations[index].fileWatcherSubscription.cancel()
-            configurations.remove(at: index)
+        if let index = findIndex(for: id) {
+            deactivate(syncItem: syncItems[index])
         }
     }
     
@@ -130,16 +210,37 @@ public class SyncOrchestrator {
     */
     public func stopSynchronizing(for index: Int) {
         // Determine SyncItem in list by index
-        configurations[0].fileWatcherSubscription.cancel()
-        configurations.remove(at: index)
+        deactivate(syncItem: syncItems[index])
+    }
+    
+    
+    /**
+     Deactivates all neccessary components of a `SyncItem`, in order to stop the synchronization.
+     
+     - parameters:
+        - item: The `SyncItem` for which the synchronization should be stopped.
+     */
+    private func deactivate(syncItem item: SyncItem) {
+        item.fileWatcherSubscription?.cancel()
+        item.status = .inactive
     }
     
     
     private func existsSyncItem(for configuration: Configuration) -> Bool {
-        if let _ = configurations.firstIndex(where: { $0.configuration.id == configuration.id }) {
+        if let _ = syncItems.firstIndex(where: { $0.configuration.id == configuration.id }) {
             return true
         } else {
             return false
         }
+    }
+    
+    
+    private func findIndex(for configuration: Configuration) -> Int? {
+        return syncItems.firstIndex(where: { $0.configuration.id == configuration.id })
+    }
+    
+    
+    private func findIndex(for id: String) -> Int? {
+        return syncItems.firstIndex(where: { $0.configuration.id == id })
     }
 }

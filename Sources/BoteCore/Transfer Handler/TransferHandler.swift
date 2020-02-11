@@ -17,6 +17,8 @@ public enum TransferHandlerStatus {
 public protocol TransferHandler {
     
     var status: TransferHandlerStatus { get }
+    // implement in concrete type as var statusPublisher: Published<TransferHandler>.Publisher { $status }
+    var statusPublisher: Published<TransferHandlerStatus>.Publisher { get }
     
     /**
      Initializes the `TransferHandler`.

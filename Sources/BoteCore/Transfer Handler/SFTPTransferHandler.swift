@@ -8,6 +8,7 @@
 
 import Foundation
 import Shout
+import Combine
 
 enum SFTPError: Error {
     case authenticationPasswordFailure, authenticationKeyFailure, connectionFailure, executionFailure, invalidPath
@@ -16,7 +17,8 @@ enum SFTPError: Error {
 
 class SFTPTransferHandler: TransferHandler {
     
-    var status: TransferHandlerStatus
+    @Published var status: TransferHandlerStatus
+    var statusPublisher: Published<TransferHandlerStatus>.Publisher { $status }
     
     // Timer
     private var timer: Timer? = nil
