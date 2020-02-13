@@ -45,8 +45,12 @@ public enum SyncOrchestratorError: Error {
     case ConfigurationDuplicate
 }
 
-public enum SyncStatus {
+public enum SyncStatus: Int, Comparable {
     case connected, active, failed, inactive
+    
+    public static func < (a: SyncStatus, b: SyncStatus) -> Bool {
+        return a.rawValue > b.rawValue
+    }
 }
 
 

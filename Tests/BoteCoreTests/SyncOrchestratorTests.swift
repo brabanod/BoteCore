@@ -80,4 +80,32 @@ class SyncOrchestratorTests: XCTestCase {
         
     }
     
+    
+    // TODO: Test if lastSynced is set correctly
+    // Also test if lastSynced is NOT set, when upload failed
+    func testLastSynced() {
+        
+    }
+    
+    
+    func testSyncStatusComparable() {
+        XCTAssertTrue(SyncStatus.connected > SyncStatus.active)
+        XCTAssertTrue(SyncStatus.connected > SyncStatus.failed)
+        XCTAssertTrue(SyncStatus.connected > SyncStatus.inactive)
+        
+        XCTAssertTrue(SyncStatus.active > SyncStatus.failed)
+        XCTAssertTrue(SyncStatus.active > SyncStatus.inactive)
+        
+        XCTAssertTrue(SyncStatus.failed > SyncStatus.inactive)
+        
+        XCTAssertFalse(SyncStatus.active > SyncStatus.connected)
+        XCTAssertFalse(SyncStatus.failed > SyncStatus.connected)
+        XCTAssertFalse(SyncStatus.inactive > SyncStatus.connected)
+        
+        XCTAssertFalse(SyncStatus.failed > SyncStatus.active)
+        XCTAssertFalse(SyncStatus.inactive > SyncStatus.active)
+        
+        XCTAssertFalse(SyncStatus.inactive > SyncStatus.failed)
+    }
+    
 }
