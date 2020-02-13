@@ -74,7 +74,7 @@ public class ConfigurationManager {
      - returns:
      An array of the `Configuration` objects, which are stored in the UserDefaults.
      */
-    public private func load() throws -> [Configuration] {
+    private func load() throws -> [Configuration] {
         var configurations = [Configuration]()
         guard let loaded = try PreferencesManager.loadAll() else { return configurations }
         for (_, value) in loaded {
