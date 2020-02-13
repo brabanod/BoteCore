@@ -14,4 +14,8 @@ public struct LocalConnection: Connection {
     public var path: String
     
     public func remove() { }
+    
+    public init(path: String) {
+        self.path = path
+    }
 }
