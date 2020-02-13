@@ -13,12 +13,13 @@ public class SyncItem {
     let configuration: Configuration
     var fileWatcher: FileWatcher?
     var transferHandler: TransferHandler?
-    var id: String { return self.configuration.id }
-    @Published var status: SyncStatus
+    public var id: String { return self.configuration.id }
+    @Published public var status: SyncStatus
+    
+    public internal(set) var lastSynced: Date?
     
     var fileWatcherSubscription: AnyCancellable?
     var statusSubscription: AnyCancellable?
-    var statusPublisher: Published<SyncStatus>.Publisher { $status }
     
     
     init(configuration: Configuration, status: SyncStatus) {
@@ -54,7 +55,7 @@ public enum SyncStatus {
  Register new configurations with the `register` method. This loads a new configuration into the SyncOrchestrator. Syncornization for loaded configurations can be started and stoppen using `startSynchronization` and `stopSynchronization`.*/
 public class SyncOrchestrator {
     
-    private (set) var syncItems: [SyncItem]
+    public private(set) var syncItems: [SyncItem]
     
     public init() {
         syncItems = [SyncItem]()
@@ -143,6 +144,7 @@ public class SyncOrchestrator {
                 case .removedDir(path: let path):
                     try transferHandler.remove(path: path, isDir: true)
                 }
+                item.lastSynced = Date.init()
             } catch let error {
                 // submit error to external errorHandler
                 errorHandler(item, error)

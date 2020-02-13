@@ -15,7 +15,7 @@ public struct Configuration {
     var fromType: ConnectionType { return from.type }
     var toType: ConnectionType { return to.type }
     
-    private (set) var id: String = UUID.init().uuidString
+    public private(set) var id: String = UUID.init().uuidString
     
     
     public init(from: Connection, to: Connection) {

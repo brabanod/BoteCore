@@ -10,7 +10,7 @@ import Foundation
 
 public class ConfigurationManager {
     
-    private (set) var configurations: [Configuration]
+    public private(set) var configurations: [Configuration]
     
     
     /**

@@ -24,9 +24,9 @@ public struct SFTPConnection: Connection {
     
     public var path: String
     var port: Int?
-    private (set) var host: String
-    private (set) var authentication: SFTPAuthentication
-    private (set) var user: String
+    public private(set) var host: String
+    public private(set) var authentication: SFTPAuthentication
+    public private(set) var user: String
     
     
     /**
