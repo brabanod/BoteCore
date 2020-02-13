@@ -24,16 +24,16 @@ public struct SFTPConnection: Connection {
     
     public var path: String
     var port: Int?
-    private(set) var host: String
-    private(set) var authentication: SFTPAuthentication
-    private(set) var user: String
+    private (set) var host: String
+    private (set) var authentication: SFTPAuthentication
+    private (set) var user: String
     
     
     /**
      Use this initializer, to create a new configuration, with a new password.
      If a keychain item already exists for this configuration, the password will be overriden.
      */
-    init(path: String, host: String, port: Int?, user: String, authentication: SFTPAuthentication) throws {
+    public init(path: String, host: String, port: Int?, user: String, authentication: SFTPAuthentication) throws {
         self.path = path
         self.host = host
         self.port = port
@@ -56,7 +56,7 @@ public struct SFTPConnection: Connection {
      Use this initializer, when a password for this configuration is already saved in keychain.
      This initializer will try to get it and initialize the configuration with the saved password.
      */
-    init(path: String, host: String, port: Int?, user: String) throws {
+    public init(path: String, host: String, port: Int?, user: String) throws {
         self.path = path
         self.host = host
         self.port = port

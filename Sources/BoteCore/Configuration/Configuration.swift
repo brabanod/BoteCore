@@ -18,7 +18,7 @@ public struct Configuration {
     private (set) var id: String = UUID.init().uuidString
     
     
-    init(from: Connection, to: Connection) {
+    public init(from: Connection, to: Connection) {
         self.from = from
         self.to = to
     }

@@ -54,13 +54,13 @@ public enum SyncStatus {
  Register new configurations with the `register` method. This loads a new configuration into the SyncOrchestrator. Syncornization for loaded configurations can be started and stoppen using `startSynchronization` and `stopSynchronization`.*/
 public class SyncOrchestrator {
     
-    var syncItems: [SyncItem]
+    private (set) var syncItems: [SyncItem]
     
-    init() {
+    public init() {
         syncItems = [SyncItem]()
     }
     
-    init(configurations: [Configuration], errorHandler: @escaping(SyncItem, Error) -> ()) throws {
+    public init(configurations: [Configuration], errorHandler: @escaping(SyncItem, Error) -> ()) throws {
         self.syncItems = [SyncItem]()
         for configuration in configurations {
             let item = try register(configuration: configuration)

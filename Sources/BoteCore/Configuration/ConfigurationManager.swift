@@ -18,7 +18,7 @@ public class ConfigurationManager {
         - _Default_: New `ConfigurationManager` object.
         - _Failure_: If the configurations couldn't be loaded from the UserDefaults, the initializer returns `nil`.
     */
-    init?(_: Void) {
+    public init?(_: Void) {
         self.configurations = [Configuration]()
         
         do {
@@ -35,7 +35,7 @@ public class ConfigurationManager {
      - parameters:
         - configuration: The `Configuration` object which should be saved.
     */
-    func add(_ configuration: Configuration) throws {
+    public func add(_ configuration: Configuration) throws {
         try PreferencesManager.save(configuration: configuration)
         try reloadList()
     }
@@ -48,7 +48,7 @@ public class ConfigurationManager {
         - configuration: The `Configuration` object which should be saved. Must be given as a reference.
         - id: The id of the `Configuration` object in the UserDefaults, which should be updated.
     */
-    func update(_ configuration: inout Configuration, for id: String) throws {
+    public func update(_ configuration: inout Configuration, for id: String) throws {
         // Set correct id for given configuration. Then update in Preferences
         configuration.setId(id)
         try PreferencesManager.save(configuration: configuration)
@@ -62,7 +62,7 @@ public class ConfigurationManager {
      - parameters:
         - id: The id of the `Configuration` object in the UserDefaults, which should be removed.
     */
-    func remove(id: String) throws {
+    public func remove(id: String) throws {
         // Call custom remove method for on the Configuration, then remove Configuration itself
         try PreferencesManager.load(for: id)?.remove()
         PreferencesManager.remove(for: id)
@@ -74,7 +74,7 @@ public class ConfigurationManager {
      - returns:
      An array of the `Configuration` objects, which are stored in the UserDefaults.
      */
-    private func load() throws -> [Configuration] {
+    public private func load() throws -> [Configuration] {
         var configurations = [Configuration]()
         guard let loaded = try PreferencesManager.loadAll() else { return configurations }
         for (_, value) in loaded {
