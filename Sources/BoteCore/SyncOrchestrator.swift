@@ -10,13 +10,13 @@ import Foundation
 import Combine
 
 public class SyncItem {
-    let configuration: Configuration
+    public let configuration: Configuration
     var fileWatcher: FileWatcher?
     var transferHandler: TransferHandler?
     public var id: String { return self.configuration.id }
-    @Published public var status: SyncStatus
+    @Published public internal(set) var status: SyncStatus
     
-    public internal(set) var lastSynced: Date?
+    @Published public internal(set) var lastSynced: Date?
     
     var fileWatcherSubscription: AnyCancellable?
     var statusSubscription: AnyCancellable?

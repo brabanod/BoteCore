@@ -22,7 +22,7 @@ class SyncOrchestratorTests: XCTestCase {
         let expectStatusProgress = XCTestExpectation(description: "Expecting the stateProgress array to be processed (empty) at the end.")
         var stateProgress: [SyncStatus] = [.inactive, .active, .active, .connected, .active, .inactive]
         
-        // Register
+        // Register configuration
         let syncItem = try so.register(configuration: c)
         let syncSub = syncItem.$status.sink { (status) in
             // Test publisher
@@ -41,7 +41,7 @@ class SyncOrchestratorTests: XCTestCase {
             XCTFail("Failed to synchronize with error:\n \(error)")
         }
         
-        // Start connection
+        // Start connection manual
         try (syncItem.transferHandler as! SFTPTransferHandler).connect()
         
         // Wait for connection
@@ -64,8 +64,33 @@ class SyncOrchestratorTests: XCTestCase {
     
     
     // TODO: Test if file are uploaded automatically
-    func testFileUpload() {
+    func testFileUpload() throws {
+        let f = LocalConnection(path: testsBasepath)
+        let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port ?? 0, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
         
+        let c = Configuration(from: f, to: t)
+        let so = SyncOrchestrator()
+        
+        // Register configuration
+        let syncItem = try so.register(configuration: c)
+        
+        // Start Sync
+        try so.startSynchronizing(for: syncItem) { (item, error) in
+            XCTFail("Failed to synchronize with error:\n \(error)")
+        }
+        
+        // Add files/dirs
+        createDir(at: testsBasepath)
+        createFile(at: testsBasepath + #"/simpleFile"#)
+        createFile(at: testsBasepath + #"/file\ with\ spaces.txt"#)
+        createDir(at: testsBasepath + #"/dir\ with\ space"#)
+        createFile(at: testsBasepath + #"/dir\ with\ space/fileInDir"#)
+        
+        // Check if added files/dirs are uploaded
+        
+        // Remove files/dirs
+        
+        // Check if removed files/dirs are removed remotely
     }
     
     
@@ -83,6 +108,7 @@ class SyncOrchestratorTests: XCTestCase {
     
     // TODO: Test if lastSynced is set correctly
     // Also test if lastSynced is NOT set, when upload failed
+    // Test lastSynced Publisher
     func testLastSynced() {
         
     }

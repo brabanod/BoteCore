@@ -81,6 +81,6 @@ class String_PathExtensionsTests: XCTestCase {
         XCTAssertEqual(localBasepath.replace(localBasePath: localBasepath, with: remoteBasepath), remoteBasepath + "/")
         
         // replacement spaces
-        XCTAssertEqual("/local/base/path/with/space extension".replace(localBasePath: localBasepath, with: remoteBasepath), #"/remote/some/foo/with/space\ extension"#)
+        XCTAssertEqual("/local/base/path/with/space extension".replace(localBasePath: localBasepath, with: remoteBasepath), #"/remote/some/foo/with/space extension"#)
     }
 }

@@ -9,11 +9,12 @@
 import Foundation
 
 public struct Configuration {
-    var from: Connection
-    var to: Connection
+    public var name: String = ""
+    public var from: Connection
+    public var to: Connection
     
-    var fromType: ConnectionType { return from.type }
-    var toType: ConnectionType { return to.type }
+    public var fromType: ConnectionType { return from.type }
+    public var toType: ConnectionType { return to.type }
     
     public private(set) var id: String = UUID.init().uuidString
     
