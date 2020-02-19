@@ -36,7 +36,7 @@ class ConfigurationTests: XCTestCase {
         let f = LocalConnection(path: testsBasepath)
         let t = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: SFTPServer.keypath))
 
-        let conf = Configuration(from: f, to: t)
+        let conf = Configuration(from: f, to: t, name: "ConfNameDemo")
         
         let encodedConf = try PropertyListEncoder().encode(conf)
         let decodedConf = try PropertyListDecoder().decode(Configuration.self, from: encodedConf)
@@ -47,6 +47,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(decodedConf.fromType, ConnectionType.local)
         XCTAssertEqual(decodedConf.toType, ConnectionType.sftp)
         XCTAssertEqual(decodedConf.id, conf.id)
+        XCTAssertEqual(decodedConf.name, conf.name)
         
         XCTAssertEqual(decodedF.type, ConnectionType.local)
         XCTAssertEqual(decodedF.path, testsBasepath)
@@ -63,7 +64,7 @@ class ConfigurationTests: XCTestCase {
         let f = try SFTPConnection(path: "from\(testsBasepath)", host: "from\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "from\(SFTPServer.user)", authentication: .key(path: "from\(SFTPServer.keypath)"))
         let t = try SFTPConnection(path: "to\(testsBasepath)", host: "to\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 2, user: "to\(SFTPServer.user)", authentication: .key(path: "to\(SFTPServer.keypath)"))
 
-        let conf = Configuration(from: f, to: t)
+        let conf = Configuration(from: f, to: t, name: "ConfNameDemo")
         
         let encodedConf = try PropertyListEncoder().encode(conf)
         let decodedConf = try PropertyListDecoder().decode(Configuration.self, from: encodedConf)
@@ -74,6 +75,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(decodedConf.fromType, ConnectionType.sftp)
         XCTAssertEqual(decodedConf.toType, ConnectionType.sftp)
         XCTAssertEqual(decodedConf.id, conf.id)
+        XCTAssertEqual(decodedConf.name, conf.name)
         
         XCTAssertEqual(decodedF.type, ConnectionType.sftp)
         XCTAssertEqual(decodedF.path, "from\(testsBasepath)")

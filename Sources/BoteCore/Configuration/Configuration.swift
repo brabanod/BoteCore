@@ -25,6 +25,13 @@ public struct Configuration {
     }
     
     
+    public init(from: Connection, to: Connection, name: String) {
+        self.from = from
+        self.to = to
+        self.name = name
+    }
+    
+    
     mutating func setId(_ id: String) {
         self.id = id
     }
@@ -40,7 +47,7 @@ public struct Configuration {
 extension Configuration: Codable {
 
     enum CodingKeys: String, CodingKey {
-        case from, to, fromType, toType, id
+        case from, to, fromType, toType, id, name
     }
     
     
@@ -48,6 +55,7 @@ extension Configuration: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         self.id = try container.decode(String.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
 
         var type: ConnectionType
         
@@ -65,6 +73,7 @@ extension Configuration: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         
         try container.encode(self.id, forKey: .id)
+        try container.encode(self.name, forKey: .name)
 
         try container.encode(self.fromType, forKey: .fromType)
         let fromContainer = container.superEncoder(forKey: .from)
