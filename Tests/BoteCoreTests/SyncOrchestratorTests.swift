@@ -12,43 +12,43 @@ class SyncOrchestratorTests: XCTestCase {
     
     var defaultTransferHandler: SFTPTransferHandler?
     
-    override func setUp() {
-        // Create local test directory
-        createDir(at: testsBasepath)
-        
-        // Create remote test directory
-        do {
-            let f = LocalConnection(path: testsBasepath)
-            let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-            defaultTransferHandler = SFTPTransferHandler.init(from: f, to: t)
-            try defaultTransferHandler?.upload(path: testsBasepath, isDir: true)
-        } catch let error {
-            if error is KeychainError {
-                fatalError("Couldn't create SFTPConnection object.\nERROR: \(error)")
-            } else {
-                fatalError("Couldn't upload remote test directory at path \'\(SFTPServer.path)\'.\nERROR: \(error)")
-            }
-        }
-    }
-    
-    override func tearDown() {
-        // Remove keychain item
-        do {
-            try KeychainGuard.removeItem(user: SFTPServer.user, server: SFTPServer.host)
-        } catch _ {
-            print("NOTE: There was no keychain item to be deleted in tearDown.")
-        }
-        
-        // Remove local test directory
-        removeDir(at: testsBasepath)
-        
-        // Remove remote test directory
-        do {
-            try defaultTransferHandler?.remove(path: testsBasepath, isDir: true)
-        } catch _ {
-            print("NOTE: There was no remote test directory to be deleted in tearDown.")
-        }
-    }
+//    override func setUp() {
+//        // Create local test directory
+//        createDir(at: testsBasepath)
+//
+//        // Create remote test directory
+//        do {
+//            let f = LocalConnection(path: testsBasepath)
+//            let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+//            defaultTransferHandler = SFTPTransferHandler.init(from: f, to: t)
+//            try defaultTransferHandler?.upload(path: testsBasepath, isDir: true)
+//        } catch let error {
+//            if error is KeychainError {
+//                fatalError("Couldn't create SFTPConnection object.\nERROR: \(error)")
+//            } else {
+//                fatalError("Couldn't upload remote test directory at path \'\(SFTPServer.path)\'.\nERROR: \(error)")
+//            }
+//        }
+//    }
+//
+//    override func tearDown() {
+//        // Remove keychain item
+//        do {
+//            try KeychainGuard.removeItem(user: SFTPServer.user, server: SFTPServer.host)
+//        } catch _ {
+//            print("NOTE: There was no keychain item to be deleted in tearDown.")
+//        }
+//
+//        // Remove local test directory
+//        removeDir(at: testsBasepath)
+//
+//        // Remove remote test directory
+//        do {
+//            try defaultTransferHandler?.remove(path: testsBasepath, isDir: true)
+//        } catch _ {
+//            print("NOTE: There was no remote test directory to be deleted in tearDown.")
+//        }
+//    }
     
     // Tests if status is updated properly
     func testStatusUpdates() throws {
@@ -215,6 +215,40 @@ class SyncOrchestratorTests: XCTestCase {
         }
         
         XCTAssertEqual(so.syncItems.count, 3)
+    }
+    
+    
+    func testUpdateSyncItemConfiguration() throws {
+        let f = LocalConnection(path: "f\(testsBasepath)")
+        let t = try SFTPConnection(path: "t\(testsBasepath)", host: "t\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "t\(SFTPServer.user)", authentication: .key(path: "t\(SFTPServer.keypath)"))
+        
+        let c = Configuration(from: f, to: t)
+        
+        let so = SyncOrchestrator()
+        _ = try so.register(configuration: c)
+        
+        XCTAssertEqual((so.syncItems[0].configuration.from as! LocalConnection).path, f.path)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).path, t.path)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).host, t.host)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).port, t.port)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).user, t.user)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).authentication, t.authentication)
+        
+        let fNew = try SFTPConnection(path: "fn\(testsBasepath)", host: "fn\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "fn\(SFTPServer.user)", authentication: .key(path: "fn\(SFTPServer.keypath)"))
+        let cNew = Configuration(from: fNew, to: t)
+        
+        so.syncItems[0].configuration = cNew
+        
+        XCTAssertEqual((so.syncItems[0].configuration.from as! SFTPConnection).path, fNew.path)
+        XCTAssertEqual((so.syncItems[0].configuration.from as! SFTPConnection).host, fNew.host)
+        XCTAssertEqual((so.syncItems[0].configuration.from as! SFTPConnection).port, fNew.port)
+        XCTAssertEqual((so.syncItems[0].configuration.from as! SFTPConnection).user, fNew.user)
+        XCTAssertEqual((so.syncItems[0].configuration.from as! SFTPConnection).authentication, fNew.authentication)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).path, t.path)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).host, t.host)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).port, t.port)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).user, t.user)
+        XCTAssertEqual((so.syncItems[0].configuration.to as! SFTPConnection).authentication, t.authentication)
     }
     
     

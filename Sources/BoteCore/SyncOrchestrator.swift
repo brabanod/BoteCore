@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 public class SyncItem {
-    public let configuration: Configuration
+    public var configuration: Configuration
     var fileWatcher: FileWatcher?
     var transferHandler: TransferHandler?
     public var id: String { return self.configuration.id }
