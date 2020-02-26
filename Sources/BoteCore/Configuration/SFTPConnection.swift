@@ -82,7 +82,7 @@ public struct SFTPConnection: Connection {
         - `KeychainError.unexpectedPasswordData`
         - `KeychainError.unhandledError(status: OSStatus)`
      */
-    func getPassword() throws -> String {
+    public func getPassword() throws -> String {
         return try KeychainGuard.getItem(user: user, server: host)
     }
     
@@ -92,7 +92,7 @@ public struct SFTPConnection: Connection {
         - The path for the SSH key, saved in the configuration
         - `nil` if authentication method is not `.key`
     */
-    func getKeyPath() -> String? {
+    public func getKeyPath() -> String? {
         switch self.authentication {
         case .key(path: let path):
             return path
@@ -118,7 +118,7 @@ public struct SFTPConnection: Connection {
         - `KeychainError.itemNotFound`
         - `KeychainError.unhandledError(status: OSStatus)`
      */
-    mutating func setAuthentication(_ newAuthentication: SFTPAuthentication) throws {
+    public mutating func setAuthentication(_ newAuthentication: SFTPAuthentication) throws {
         switch newAuthentication {
         case .password(value: let password):
             // Update password in keychain item
@@ -142,7 +142,7 @@ public struct SFTPConnection: Connection {
         - `KeychainError.itemNotFound`
         - `KeychainError.unhandledError(status: OSStatus)`
      */
-    mutating func setUser(_ newUser: String) throws {
+    public mutating func setUser(_ newUser: String) throws {
         if case .password = authentication {
             try KeychainGuard.updateItem(user: user, server: host, newUser: newUser, newPassword: nil, newServer: nil)
         }
@@ -160,7 +160,7 @@ public struct SFTPConnection: Connection {
         - `KeychainError.itemNotFound`
         - `KeychainError.unhandledError(status: OSStatus)`
      */
-    mutating func setHost(_ newHost: String) throws {
+    public mutating func setHost(_ newHost: String) throws {
         if case .password = authentication {
             try KeychainGuard.updateItem(user: user, server: host, newUser: nil, newPassword: nil, newServer: newHost)
         }
