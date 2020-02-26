@@ -50,9 +50,9 @@ public class ConfigurationManager {
     */
     public func update(_ configuration: inout Configuration, for id: String) throws {
         // Set correct id for given configuration. Then update in Preferences
+        try remove(id: id)
         configuration.setId(id)
-        try PreferencesManager.save(configuration: configuration)
-        try reloadList()
+        try add(configuration)
     }
     
     

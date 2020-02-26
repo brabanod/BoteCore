@@ -17,6 +17,12 @@ class ConfigurationManagerTests: XCTestCase {
 
     override func tearDown() {
         PreferencesManager.removeAll()
+        do {
+            try KeychainGuard.removeItem(user: SFTPServer.user, server: SFTPServer.host)
+            try KeychainGuard.removeItem(user: "n\(SFTPServer.user)", server: "n\(SFTPServer.host)")
+        } catch _ {
+            print("NOTE: There was no keychain item to be deleted in tearDown.")
+        }
     }
     
     func testInitEmpty() throws {
@@ -203,6 +209,64 @@ class ConfigurationManagerTests: XCTestCase {
         XCTAssertEqual(udConfAfterPersist.from.path, "new\(testsBasepath)")
         XCTAssertEqual((udConfAfterPersist.to as! SFTPConnection).user, "new\(SFTPServer.user)")
         XCTAssertEqual(udConfAfterPersist.to.path, "neww\(testsBasepath)")
+    }
+    
+    func testUpdateWithReplacing() throws {
+        // Instead of just chaning the configuration, override it with a new one
+        // Generate data
+        let f = LocalConnection(path: testsBasepath)
+        let t = try SFTPConnection(path: testsBasepath, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+        let conf = Configuration(from: f, to: t)
+        
+        // Add via Configuration Manager
+        guard let cm = ConfigurationManager(()) else { XCTFail("Failed to initialize ConfigurationManager."); return }
+        try cm.add(conf)
+        
+        
+        // Check before update
+        let cmConfBeforePersist = cm.configurations[0]
+        XCTAssertEqual(cmConfBeforePersist.id, conf.id)
+        XCTAssertEqual(cmConfBeforePersist.from.path, testsBasepath)
+        XCTAssertEqual((cmConfBeforePersist.to as! SFTPConnection).user, SFTPServer.user)
+        XCTAssertEqual(cmConfBeforePersist.to.path, testsBasepath)
+        
+        guard let udConfBeforePersist = try PreferencesManager.load(for: conf.id) else { XCTFail("Couldn't load configuration from UserDefaults."); return }
+        XCTAssertEqual(udConfBeforePersist.id, conf.id)
+        XCTAssertEqual(udConfBeforePersist.from.path, testsBasepath)
+        XCTAssertEqual((udConfBeforePersist.to as! SFTPConnection).user, SFTPServer.user)
+        XCTAssertEqual(udConfBeforePersist.to.path, testsBasepath)
+        
+        // Check if correct keychain items are stored
+        XCTAssertEqual(SFTPServer.password, try KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
+        XCTAssertEqual(nil, try? KeychainGuard.getItem(user: "n\(SFTPServer.user)", server: "n\(SFTPServer.host)"))
+        
+        
+        // Create updated Configuration to override
+        let fNew = LocalConnection(path: "n\(testsBasepath)")
+        let tNew = try SFTPConnection(path: "n\(testsBasepath)", host: "n\(SFTPServer.host)", port: SFTPServer.port, user: "n\(SFTPServer.user)", authentication: .password(value: "n\(SFTPServer.password)"))
+        var confNew = Configuration(from: fNew, to: tNew)
+        
+        // Update in UserDefaults
+        try cm.update(&confNew, for: conf.id)
+        
+        // Check after update
+        let cmConfAfterPersist = cm.configurations[0]
+        XCTAssertEqual(cmConfAfterPersist.id, conf.id)
+        XCTAssertEqual(cmConfAfterPersist.from.path, "n\(testsBasepath)")
+        XCTAssertEqual((cmConfAfterPersist.to as! SFTPConnection).user, "n\(SFTPServer.user)")
+        XCTAssertEqual((cmConfAfterPersist.to as! SFTPConnection).host, "n\(SFTPServer.host)")
+        XCTAssertEqual(cmConfAfterPersist.to.path, "n\(testsBasepath)")
+        
+        guard let udConfAfterPersist = try PreferencesManager.load(for: conf.id) else { XCTFail("Couldn't load configuration from UserDefaults."); return }
+        XCTAssertEqual(udConfAfterPersist.id, conf.id)
+        XCTAssertEqual(udConfAfterPersist.from.path, "n\(testsBasepath)")
+        XCTAssertEqual((udConfAfterPersist.to as! SFTPConnection).user, "n\(SFTPServer.user)")
+        XCTAssertEqual((udConfAfterPersist.to as! SFTPConnection).host, "n\(SFTPServer.host)")
+        XCTAssertEqual(udConfAfterPersist.to.path, "n\(testsBasepath)")
+        
+        // Check if correct keychain items are stored
+        XCTAssertEqual(nil, try? KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
+        XCTAssertEqual("n\(SFTPServer.password)", try KeychainGuard.getItem(user: "n\(SFTPServer.user)", server: "n\(SFTPServer.host)"))
     }
     
     func testRemove() throws {
