@@ -265,7 +265,9 @@ class ConfigurationManagerTests: XCTestCase {
         XCTAssertEqual(udConfAfterPersist.to.path, "n\(testsBasepath)")
         
         // Check if correct keychain items are stored
-        XCTAssertEqual(nil, try? KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
+        // A new keychain item is stored and the old is kept
+        // Thats updating a configuration this way should NOT happen
+        XCTAssertEqual(SFTPServer.password, try? KeychainGuard.getItem(user: SFTPServer.user, server: SFTPServer.host))
         XCTAssertEqual("n\(SFTPServer.password)", try KeychainGuard.getItem(user: "n\(SFTPServer.user)", server: "n\(SFTPServer.host)"))
     }
     
