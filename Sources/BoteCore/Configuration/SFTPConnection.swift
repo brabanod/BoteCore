@@ -186,11 +186,10 @@ public struct SFTPConnection: Connection {
         - `KeychainError.unhandledError(status: OSStatus)`
      */
     private func savePassword(_ password: String) throws {
-        do {
-            // Update password, if item already exists
-            let _ = try getPassword()
+        // Update password, if item already exists
+        if let _ = try? getPassword() {
             try KeychainGuard.updateItem(user: user, server: host, newUser: nil, newPassword: password, newServer: nil)
-        } catch _ {
+        } else {
             // Create item, if it doesn't exist
             try KeychainGuard.addItem(user: user, password: password, server: host, type: "SFTP")
         }
