@@ -116,11 +116,13 @@ public class SyncOrchestrator {
         
         // Setup TransferHandler for configuration.to
         guard let transferHandler: TransferHandler = TransferHandlerOrganizer.getTransferHandler(for: configuration)
-            else { throw SyncOrchestratorError.TransferHandlerInitFailure("Initialization of TransferHandler failed and returned nil. Unsupported Connection type possible.") }
+            else { item.status = .failed
+                throw SyncOrchestratorError.TransferHandlerInitFailure("Initialization of TransferHandler failed and returned nil. Unsupported Connection type possible.") }
         
         // Setup FileWatcher for configuration.from (use TransferHandler in receive from Publisher)
         guard let fileWatcher = FileWatcherOrganizer.getFileWatcher(for: configuration.from)
-            else { throw SyncOrchestratorError.FileWatcherInitFailure("Initialization of FileWatcher failed. and returned nil. Unsupported Connection type possible.") }
+            else { item.status = .failed
+                throw SyncOrchestratorError.FileWatcherInitFailure("Initialization of FileWatcher failed. and returned nil. Unsupported Connection type possible.") }
         
         // Subscribe to FileWatcher
         let fileWatcherSubscription = fileWatcher.sink(receiveCompletion: { (completion) in
