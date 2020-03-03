@@ -29,3 +29,16 @@ for configuration in configManager.configurations {
     }
 }
 ```
+
+Alternatively you can let `SyncOrchestrator` do the work of registering and starting an array of configurations for you. The downside using this method is, that when an error occurs with one configuration, the remaining configurations are skipped because the function will throw an error and return.
+```swift
+guard let configManager = ConfigurationManager.init(()) else { return }
+syncOrchestrator = SyncOrchestrator()
+do {
+    try syncOrchestrator = SyncOrchestrator(configurations: configManager.configurations, errorHandler: { (item, error) in
+        // handle errors which occure while synchronization is running
+    })
+} catch let error {
+    // handle errors which occure when trying to start the sync
+}
+```
