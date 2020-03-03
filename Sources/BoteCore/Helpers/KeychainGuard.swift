@@ -33,7 +33,7 @@ class KeychainGuard {
     public static func addItem(user: String, password: String, server: String, type: String) throws {
         // Query with parameters for new item
         let addQuery: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
-                                       kSecAttrLabel as String: Bundle.main.bundleIdentifier ?? "de.pascalbraband.zynced",
+                                       kSecAttrLabel as String: Bundle.main.bundleIdentifier ?? "de.pascalbraband.bote-core",
                                        kSecAttrDescription as String: "Zynced Connection",
                                        kSecAttrComment as String: "Credentials for \(type) Connection",
                                        kSecAttrAccount as String: user,
