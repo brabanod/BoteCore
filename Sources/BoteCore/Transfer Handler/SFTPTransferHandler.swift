@@ -11,7 +11,11 @@ import Shout
 import Combine
 
 enum SFTPError: Error {
-    case authenticationPasswordFailure, authenticationKeyFailure, connectionFailure, executionFailure, invalidPath
+    case authenticationPasswordFailure(String)
+    case authenticationKeyFailure(String)
+    case connectionFailure(String)
+    case executionFailure(String)
+    case invalidPath(String)
 }
 
 
@@ -73,8 +77,8 @@ class SFTPTransferHandler: TransferHandler {
         
         do {
             try sftpSession!.upload(localURL: source, remotePath: destination, permissions: .default)
-        } catch {
-            throw SFTPError.executionFailure
+        } catch let error {
+            throw SFTPError.executionFailure(error.localizedDescription)
         }
     }
     
@@ -88,8 +92,8 @@ class SFTPTransferHandler: TransferHandler {
             if try !directoryExists(at: directoryPath) {
                 try sftpSession!.createDirectory(directoryPath)
             }
-        } catch {
-            throw SFTPError.executionFailure
+        } catch let error {
+            throw SFTPError.executionFailure(error.localizedDescription)
         }
     }
     
@@ -111,8 +115,8 @@ class SFTPTransferHandler: TransferHandler {
         
         do {
             try sftpSession!.removeFile(removePath)
-        } catch {
-            throw SFTPError.executionFailure
+        } catch let error {
+            throw SFTPError.executionFailure(error.localizedDescription)
         }
     }
     
@@ -123,8 +127,8 @@ class SFTPTransferHandler: TransferHandler {
         
         do {
             try sshSession!.execute("rm -rf \(removePath)")
-        } catch {
-            throw SFTPError.executionFailure
+        } catch let error {
+            throw SFTPError.executionFailure(error.localizedDescription)
         }
     }
     
@@ -138,8 +142,8 @@ class SFTPTransferHandler: TransferHandler {
                
         do {
             try sftpSession!.rename(src: source, dest: destination, override: true)
-        } catch {
-            throw SFTPError.executionFailure
+        } catch let error {
+            throw SFTPError.executionFailure(error.localizedDescription)
         }
     }
     
@@ -163,14 +167,14 @@ class SFTPTransferHandler: TransferHandler {
                     
                     do {
                         sftpSession = try sshSession!.openSftp()
-                    } catch {
-                        throw SFTPError.connectionFailure
+                    } catch let error {
+                        throw SFTPError.connectionFailure("Failed to establish SFTP connection. \(error.localizedDescription)")
                     }
-                } catch _ {
-                    throw SFTPError.authenticationKeyFailure
+                } catch let error {
+                    throw SFTPError.authenticationKeyFailure(error.localizedDescription)
                 }
-            } catch _ {
-                throw SFTPError.connectionFailure
+            } catch let error {
+                throw SFTPError.connectionFailure("Failed to establish SSH connection. \(error.localizedDescription)")
             }
         }
         status = .connected
@@ -223,8 +227,8 @@ class SFTPTransferHandler: TransferHandler {
             } else {
                 return false
             }
-        } catch {
-            throw SFTPError.executionFailure
+        } catch let error {
+            throw SFTPError.executionFailure(error.localizedDescription)
         }
     }
     
