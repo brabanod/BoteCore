@@ -74,6 +74,10 @@ class SFTPTransferHandlerTests: XCTestCase {
     }
     
     func testConnectWithKey() throws {
+        // Remove other connection, would lead to errors otherwise
+        defaultTransferHandler?.terminate()
+        defaultTransferHandler = nil
+        
         // Create transfer handler with password
         let f = LocalConnection(path: testsBasepath)
         let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: "/Users/pascal/.ssh/id_rsa"))
@@ -82,9 +86,7 @@ class SFTPTransferHandlerTests: XCTestCase {
         do {
             try sh.connect()
         } catch let error {
-            // FIXME: Currently fails
-            print(error)
-            //XCTFail("Failed to connect: \(error)")
+            XCTFail("Failed with message: \(String(describing: error.self))")
         }
     }
 
