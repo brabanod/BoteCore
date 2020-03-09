@@ -65,7 +65,7 @@ func shell(_ command: String) -> String {
 
 func safetyNet(path: String..., completion: () -> ()) {
     // Should prevent accidently operating on wrong path in file system
-    if path.allSatisfy({ $0.hasPrefix(testsBasepath) }) {
+    if path.allSatisfy({ $0.hasPrefix("/private/tmp/") }) {
         completion()
     } else {
         fatalError("Operating on unauthorized path: \(path).")

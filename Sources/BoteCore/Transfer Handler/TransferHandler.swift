@@ -14,6 +14,11 @@ public enum TransferHandlerStatus {
 }
 
 
+public enum TransferHandlerError: Error {
+    case failedInitialization(String)
+}
+
+
 public protocol TransferHandler {
     
     var status: TransferHandlerStatus { get }
@@ -27,7 +32,7 @@ public protocol TransferHandler {
         - from: The `Connection` object, from which files should be transferred.
         - to: The `Connection` object, to which files should be transferred.
      */
-    init(from: Connection, to: SFTPConnection)
+    init(from: Connection, to: Connection) throws
     
     
     /**
@@ -82,18 +87,14 @@ class TransferHandlerOrganizer {
      - parameters:
         - connection: The `Connection`, for which the `TransferHandler` should be configured.
      */
-    static func getTransferHandler(for configuration: Configuration) -> TransferHandler? {
+    static func getTransferHandler(for configuration: Configuration) throws -> TransferHandler {
         switch configuration.to.type {
-//        case .local:
-//            return LocalTransferHandler.init(connection: connection)
+        case .local:
+            return try LocalTransferHandler(from: configuration.from, to: configuration.to)
         case .sftp:
-            if configuration.to is SFTPConnection {
-                return SFTPTransferHandler(from: configuration.from, to: (configuration.to as! SFTPConnection))
-            } else {
-                return nil
-            }
+            return try SFTPTransferHandler(from: configuration.from, to: configuration.to)
         default:
-            return nil
+            throw TransferHandlerError.failedInitialization("Initialization of transfer handler failed due to unsupported connection type.")
         }
     }
 }

@@ -115,7 +115,7 @@ public class SyncOrchestrator {
         // Setup synchronizing with the given configuration
         
         // Setup TransferHandler for configuration.to
-        guard let transferHandler: TransferHandler = TransferHandlerOrganizer.getTransferHandler(for: configuration)
+        guard let transferHandler: TransferHandler = try? TransferHandlerOrganizer.getTransferHandler(for: configuration)
             else { item.status = .failed
                 throw SyncOrchestratorError.TransferHandlerInitFailure("Initialization of TransferHandler failed and returned nil. Unsupported Connection type possible.") }
         

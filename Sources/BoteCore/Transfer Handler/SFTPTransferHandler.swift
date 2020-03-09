@@ -45,17 +45,21 @@ class SFTPTransferHandler: TransferHandler {
     private let safetyNet: SafetyNet
     
     
-    required init(from: Connection, to: SFTPConnection) {
-        self.status = .disconnected
-        self.remoteHost = to.host
-        self.remoteUser = to.user
-        self.localBasePath = from.path
-        self.remoteBasePath = to.path
-        
-        self.from = from
-        self.to = to
-        
-        self.safetyNet = SafetyNet(basePath: self.remoteBasePath)
+    required init(from: Connection, to: Connection) throws {
+        if let toSFTP = to as? SFTPConnection {
+            self.status = .disconnected
+            self.remoteHost = toSFTP.host
+            self.remoteUser = toSFTP.user
+            self.localBasePath = from.path
+            self.remoteBasePath = toSFTP.path
+            
+            self.from = from
+            self.to = toSFTP
+            
+            self.safetyNet = SafetyNet(basePath: self.remoteBasePath)
+        } else {
+            throw TransferHandlerError.failedInitialization("Given to Connection should be of type \(ConnectionType.sftp) but was \(to.type).")
+        }
     }
     
     

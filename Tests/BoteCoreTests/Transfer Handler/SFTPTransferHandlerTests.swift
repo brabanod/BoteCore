@@ -43,7 +43,7 @@ class SFTPTransferHandlerTests: XCTestCase {
         do {
             let f = LocalConnection(path: testsBasepath)
             let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-            defaultTransferHandler = SFTPTransferHandler.init(from: f, to: t)
+            defaultTransferHandler = try SFTPTransferHandler.init(from: f, to: t)
             try defaultTransferHandler?.upload(path: testsBasepath, isDir: true)
         } catch let error {
             if error is KeychainError {
@@ -81,7 +81,7 @@ class SFTPTransferHandlerTests: XCTestCase {
         // Create transfer handler with password
         let f = LocalConnection(path: testsBasepath)
         let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: "/Users/pascal/.ssh/id_rsa"))
-        let sh = SFTPTransferHandler.init(from: f, to: t)
+        let sh = try SFTPTransferHandler.init(from: f, to: t)
         
         do {
             try sh.connect()
@@ -94,7 +94,7 @@ class SFTPTransferHandlerTests: XCTestCase {
         // Create transfer handler with password
         let f = LocalConnection(path: testsBasepath)
         let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-        let sh = SFTPTransferHandler.init(from: f, to: t)
+        let sh = try SFTPTransferHandler.init(from: f, to: t)
         
         try sh.connect()
     }
@@ -397,7 +397,7 @@ class SFTPTransferHandlerTests: XCTestCase {
         do {
             let f = LocalConnection(path: testsBasepath)
             let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-            return SFTPTransferHandler.init(from: f, to: t)
+            return try SFTPTransferHandler.init(from: f, to: t)
         } catch let error {
             if error is KeychainError {
                 fatalError("Couldn't create SFTPConnection object.\nERROR: \(error)")

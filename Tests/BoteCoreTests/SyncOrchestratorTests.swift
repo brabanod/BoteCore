@@ -20,7 +20,7 @@ class SyncOrchestratorTests: XCTestCase {
         do {
             let f = LocalConnection(path: testsBasepath)
             let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-            defaultTransferHandler = SFTPTransferHandler.init(from: f, to: t)
+            defaultTransferHandler = try SFTPTransferHandler.init(from: f, to: t)
             try defaultTransferHandler?.upload(path: testsBasepath, isDir: true)
         } catch let error {
             if error is KeychainError {
@@ -337,34 +337,35 @@ class SyncOrchestratorTests: XCTestCase {
     }
     
     
-    func testTransferHandlerInitFail() throws {
-        let f = LocalConnection(path: "f\(testsBasepath)")
-        let t = LocalConnection(path: "t\(testsBasepath)")
-        
-        let c = Configuration(from: f, to: t)
-        
-        let expectStatusProgress = XCTestExpectation(description: "Expecting the stateProgress array to be processed (empty) at the end.")
-        var stateProgress: [SyncStatus] = [.inactive, .failed]
-        
-        // Start syncronization with unsupported transfer handler type sftp
-        let so = SyncOrchestrator()
-        let si = try so.register(configuration: c)
-        let sub = so.syncItems.first!.$status.sink { (status) in
-            XCTAssertEqual(stateProgress.first!, status)
-            stateProgress.remove(at: 0)
-            
-            if stateProgress.count == 0 {
-                expectStatusProgress.fulfill()
-            }
-        }
-        do {
-            try so.startSynchronizing(for: si) { (_, _) in }
-            XCTFail("Should throw error")
-        } catch _ { }
-        
-        XCTAssertEqual(so.syncItems[0].status, .failed)
-        wait(for: [expectStatusProgress], timeout: 0.1)
-    }
+    // Currently not working because all ConnectionTypes are also supported as TransferHandler
+//    func testTransferHandlerInitFail() throws {
+//        let f = LocalConnection(path: "f\(testsBasepath)")
+//        let t = LocalConnection(path: "t\(testsBasepath)")
+//
+//        let c = Configuration(from: f, to: t)
+//
+//        let expectStatusProgress = XCTestExpectation(description: "Expecting the stateProgress array to be processed (empty) at the end.")
+//        var stateProgress: [SyncStatus] = [.inactive, .failed]
+//
+//        // Start syncronization with unsupported transfer handler type sftp
+//        let so = SyncOrchestrator()
+//        let si = try so.register(configuration: c)
+//        let sub = so.syncItems.first!.$status.sink { (status) in
+//            XCTAssertEqual(stateProgress.first!, status)
+//            stateProgress.remove(at: 0)
+//
+//            if stateProgress.count == 0 {
+//                expectStatusProgress.fulfill()
+//            }
+//        }
+//        do {
+//            try so.startSynchronizing(for: si) { (_, _) in }
+//            XCTFail("Should throw error")
+//        } catch _ { }
+//
+//        XCTAssertEqual(so.syncItems[0].status, .failed)
+//        wait(for: [expectStatusProgress], timeout: 0.1)
+//    }
     
     
     

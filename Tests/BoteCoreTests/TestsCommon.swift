@@ -21,3 +21,8 @@ struct SFTPServer {
     static let password = "mypi100"
     static let keypath = "/Users/pascal/.ssh/id_rsa.pub"
 }
+
+
+struct LocalServer {
+    static let path = "/private/tmp/bote-core-tests-local"
+}

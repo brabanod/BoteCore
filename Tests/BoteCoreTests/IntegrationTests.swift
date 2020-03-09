@@ -17,7 +17,7 @@ class IntegrationTests: XCTestCase {
         do {
             let f = LocalConnection(path: testsBasepath)
             let t = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
-            defaultTransferHandler = SFTPTransferHandler.init(from: f, to: t)
+            defaultTransferHandler = try SFTPTransferHandler.init(from: f, to: t)
             try defaultTransferHandler?.upload(path: testsBasepath, isDir: true)
         } catch let error {
             if error is KeychainError {
