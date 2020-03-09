@@ -171,15 +171,8 @@ class ConfigurationManagerTests: XCTestCase {
         guard let cm = ConfigurationManager(()) else { XCTFail("Failed to initialize ConfigurationManager."); return }
         try cm.add(conf)
         
-        // Perform updates on configuration
-        var cmConf = cm.configurations[0]
-        cmConf.from.path = "new\(testsBasepath)"
-        cmConf.to.path = "neww\(testsBasepath)"
-        if var sftpCon = cmConf.to as? SFTPConnection {
-            try sftpCon.setUser("new\(SFTPServer.user)")
-            cmConf.to = sftpCon
-        }
-        
+        // Create updated configuration
+        var newConf = Configuration(from: LocalConnection(path: "new\(testsBasepath)"), to: try SFTPConnection(path: "neww\(testsBasepath)", host: SFTPServer.host, port: SFTPServer.port, user: "new\(SFTPServer.user)", authentication: .key(path: SFTPServer.keypath)))
         
         // Check before update
         let cmConfBeforePersist = cm.configurations[0]
@@ -195,7 +188,7 @@ class ConfigurationManagerTests: XCTestCase {
         XCTAssertEqual(udConfBeforePersist.to.path, testsBasepath)
         
         // Update in UserDefaults
-        try cm.update(&cmConf, for: conf.id)
+        try cm.update(&newConf, for: conf.id)
         
         // Check after update
         let cmConfAfterPersist = cm.configurations[0]

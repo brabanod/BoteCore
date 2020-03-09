@@ -19,7 +19,7 @@ public enum SFTPAuthentication: Equatable {
  `.password(value: String)` in `authentication` is will not be saved and is only for initializing.
  If you want to access the password
  */
-public struct SFTPConnection: Connection {
+public class SFTPConnection: Connection {
     public let type: ConnectionType = ConnectionType.sftp
     
     public var path: String
@@ -118,7 +118,7 @@ public struct SFTPConnection: Connection {
         - `KeychainError.itemNotFound`
         - `KeychainError.unhandledError(status: OSStatus)`
      */
-    public mutating func setAuthentication(_ newAuthentication: SFTPAuthentication) throws {
+    public func setAuthentication(_ newAuthentication: SFTPAuthentication) throws {
         switch newAuthentication {
         case .password(value: let password):
             // Update password in keychain item
@@ -142,7 +142,7 @@ public struct SFTPConnection: Connection {
         - `KeychainError.itemNotFound`
         - `KeychainError.unhandledError(status: OSStatus)`
      */
-    public mutating func setUser(_ newUser: String) throws {
+    public func setUser(_ newUser: String) throws {
         if case .password = authentication {
             try KeychainGuard.updateItem(user: user, server: host, newUser: newUser, newPassword: nil, newServer: nil)
         }
@@ -160,7 +160,7 @@ public struct SFTPConnection: Connection {
         - `KeychainError.itemNotFound`
         - `KeychainError.unhandledError(status: OSStatus)`
      */
-    public mutating func setHost(_ newHost: String) throws {
+    public func setHost(_ newHost: String) throws {
         if case .password = authentication {
             try KeychainGuard.updateItem(user: user, server: host, newUser: nil, newPassword: nil, newServer: newHost)
         }
@@ -212,6 +212,11 @@ public struct SFTPConnection: Connection {
     
     public func remove() {
         removePassword()
+    }
+    
+    
+    deinit {
+        remove()
     }
 }
 

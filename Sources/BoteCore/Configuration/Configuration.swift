@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Configuration {
+public class Configuration: Codable {
     public var name: String = ""
     public var from: Connection
     public var to: Connection
@@ -32,7 +32,7 @@ public struct Configuration {
     }
     
     
-    mutating func setId(_ id: String) {
+    func setId(_ id: String) {
         self.id = id
     }
     
@@ -41,17 +41,18 @@ public struct Configuration {
         from.remove()
         to.remove()
     }
-}
-
-
-extension Configuration: Codable {
+    
+    
+    
+    
+    // MARK: - Codable
 
     enum CodingKeys: String, CodingKey {
         case from, to, fromType, toType, id, name
     }
     
     
-    public init(from decoder: Decoder) throws {
+    required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         self.id = try container.decode(String.self, forKey: .id)

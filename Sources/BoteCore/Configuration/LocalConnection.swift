@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct LocalConnection: Connection {
+public class LocalConnection: Connection {
     public let type: ConnectionType = ConnectionType.local
     
     public var path: String
