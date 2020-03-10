@@ -12,17 +12,17 @@ import Shout
 
 class LocalTransferHandlerTests: XCTestCase {
     
-    let fileA = testsBasepath + "/test_file_a"
-    let fileB = testsBasepath + "/test_file_b"
-    let dirA = testsBasepath + "/test_dir_a"
-    let dirB = testsBasepath + "/test_dir_b"
+    let fileA = testsBasepath + "/test file a"
+    let fileB = testsBasepath + "/test file b"
+    let dirA = testsBasepath + "/test dir a"
+    let dirB = testsBasepath + "/test dir b"
     
-    let fileAA = testsBasepath + "/test_dir_a/test_file_aa"
-    let fileAB = testsBasepath + "/test_dir_a/test_file_ab"
-    let dirAA = testsBasepath + "/test_dir_a/test_dir_aa"
+    let fileAA = testsBasepath + "/test dir a/test file aa"
+    let fileAB = testsBasepath + "/test dir a/test file ab"
+    let dirAA = testsBasepath + "/test dir a/test dir aa"
     
-    let fileAAA = testsBasepath + "/test_dir_a/test_dir_aa/test_file_aaa"
-    let fileAAB = testsBasepath + "/test_dir_a/test_dir_aa/test_file_aab"
+    let fileAAA = testsBasepath + "/test dir a/test dir aa/test file aaa"
+    let fileAAB = testsBasepath + "/test dir a/test dir aa/test file aab"
     
     var defaultTransferHandler: SFTPTransferHandler?
 
@@ -201,6 +201,7 @@ class LocalTransferHandlerTests: XCTestCase {
     }
     
     func testMoveDirectory() throws {
+        createDir(at: dirB)
         let th = getTransferHandler()
         
         // Create Directory with Sub-Directories
@@ -281,7 +282,7 @@ class LocalTransferHandlerTests: XCTestCase {
      */
     func checkIfExists(path: String, isDir: Bool) throws -> Bool {
         let option = isDir ? "-d" : "-f"
-        let result = shell("if test \(option) \(path); then echo \"exists\"; fi")
+        let result = shell("if test \(option) \(path.escapeSpaces()); then echo \"exists\"; fi")
         if result.components(separatedBy: "\n")[0] == "exists" {
             return true
         } else {
@@ -299,7 +300,7 @@ class LocalTransferHandlerTests: XCTestCase {
      */
     func checkIfNotExists(path: String, isDir: Bool) throws -> Bool {
         let option = isDir ? "-d" : "-f"
-        let result = shell("if test ! \(option) \(path); then echo \"removed\"; fi")
+        let result = shell("if test ! \(option) \(path.escapeSpaces()); then echo \"removed\"; fi")
         if result.components(separatedBy: "\n")[0] == "removed" {
             return true
         } else {
@@ -317,7 +318,7 @@ class LocalTransferHandlerTests: XCTestCase {
      */
     func getFileContents(for path: String) throws -> String {
         let transferPath = getTransferPath(from: path)
-        return shell("cat \(path)")
+        return shell("cat \(path.escapeSpaces())")
     }
 
     

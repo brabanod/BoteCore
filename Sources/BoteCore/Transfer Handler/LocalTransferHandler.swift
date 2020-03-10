@@ -63,7 +63,7 @@ class LocalTransferHandler: TransferHandler {
         //let source = URL(fileURLWithPath: path)
         try safetyNet.intercept(path: destination)
         
-        shell("cp -r \(path) \(destination)")
+        shell("cp -r \(path.escapeSpaces()) \(destination.escapeSpaces())")
     }
     
     
@@ -71,7 +71,7 @@ class LocalTransferHandler: TransferHandler {
         let destination = path.replace(localBasePath: localBasePath, with: toBasePath)
         try safetyNet.intercept(path: destination)
         
-        shell("cp \(path) \(destination)")
+        shell("cp \(path.escapeSpaces()) \(destination.escapeSpaces())")
     }
     
     
@@ -90,7 +90,7 @@ class LocalTransferHandler: TransferHandler {
         let destination = path.replace(localBasePath: localBasePath, with: toBasePath)
         try safetyNet.intercept(path: destination)
         
-        shell("rm -rf \(destination)")
+        shell("rm -rf \(destination.escapeSpaces())")
     }
     
     
@@ -98,7 +98,7 @@ class LocalTransferHandler: TransferHandler {
         let destination = path.replace(localBasePath: localBasePath, with: toBasePath)
         try safetyNet.intercept(path: destination)
         
-        shell("rm \(destination)")
+        shell("rm \(destination.escapeSpaces())")
     }
     
     
@@ -109,7 +109,7 @@ class LocalTransferHandler: TransferHandler {
         let destination = dst.replace(localBasePath: localBasePath, with: toBasePath)
         try safetyNet.intercept(path: source, destination)
         
-        shell("mv \(source) \(destination)")
+        shell("mv \(source.escapeSpaces()) \(destination.escapeSpaces())")
     }
     
     

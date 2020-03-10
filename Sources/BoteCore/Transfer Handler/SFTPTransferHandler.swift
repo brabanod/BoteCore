@@ -225,7 +225,7 @@ class SFTPTransferHandler: TransferHandler {
      */
     private func directoryExists(at path: String) throws -> Bool {
         do {
-            let (status, contents) = try sshSession!.capture("if test -d \(path); then echo \"exists\"; fi")
+            let (status, contents) = try sshSession!.capture("if test -d \(path.escapeSpaces()); then echo \"exists\"; fi")
             if status == 0, contents.components(separatedBy: "\n")[0] == "exists" {
                 return true
             } else {

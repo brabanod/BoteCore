@@ -12,17 +12,17 @@ import Shout
 
 class SFTPTransferHandlerTests: XCTestCase {
     
-    let fileA = testsBasepath + "/test_file_a"
-    let fileB = testsBasepath + "/test_file_b"
-    let dirA = testsBasepath + "/test_dir_a"
-    let dirB = testsBasepath + "/test_dir_b"
+    let fileA = testsBasepath + "/test file a"
+    let fileB = testsBasepath + "/test file b"
+    let dirA = testsBasepath + "/test dir a"
+    let dirB = testsBasepath + "/test dir b"
     
-    let fileAA = testsBasepath + "/test_dir_a/test_file_aa"
-    let fileAB = testsBasepath + "/test_dir_a/test_file_ab"
-    let dirAA = testsBasepath + "/test_dir_a/test_dir_aa"
+    let fileAA = testsBasepath + "/test dir a/test file aa"
+    let fileAB = testsBasepath + "/test dir a/test file ab"
+    let dirAA = testsBasepath + "/test dir a/test dir aa"
     
-    let fileAAA = testsBasepath + "/test_dir_a/test_dir_aa/test_file_aaa"
-    let fileAAB = testsBasepath + "/test_dir_a/test_dir_aa/test_file_aab"
+    let fileAAA = testsBasepath + "/test dir a/test dir aa/test file aaa"
+    let fileAAB = testsBasepath + "/test dir a/test dir aa/test file aab"
     
     var defaultTransferHandler: SFTPTransferHandler?
 
@@ -347,7 +347,7 @@ class SFTPTransferHandlerTests: XCTestCase {
     func checkIfExists(path: String, isDir: Bool) throws -> Bool {
         let ssh = defaultTransferHandler!.sshSession!
         let option = isDir ? "-d" : "-f"
-        let (status, contents) = try ssh.capture("if test \(option) \(path); then echo \"exists\"; fi")
+        let (status, contents) = try ssh.capture("if test \(option) \(path.escapeSpaces()); then echo \"exists\"; fi")
         if status == 0, contents.components(separatedBy: "\n")[0] == "exists" {
             return true
         } else {
@@ -366,7 +366,7 @@ class SFTPTransferHandlerTests: XCTestCase {
     func checkIfNotExists(path: String, isDir: Bool) throws -> Bool {
         let ssh = defaultTransferHandler!.sshSession!
         let option = isDir ? "-d" : "-f"
-        let (status, contents) = try ssh.capture("if test ! \(option) \(path); then echo \"removed\"; fi")
+        let (status, contents) = try ssh.capture("if test ! \(option) \(path.escapeSpaces()); then echo \"removed\"; fi")
         if status == 0, contents.components(separatedBy: "\n")[0] == "removed" {
             return true
         } else {
@@ -384,7 +384,7 @@ class SFTPTransferHandlerTests: XCTestCase {
     func getRemoteFileContents(for path: String) throws -> String {
         let remotePath = getRemotePath(from: path)
         let ssh = defaultTransferHandler!.sshSession!
-        let (_, contents) = try ssh.capture("cat \(remotePath)")
+        let (_, contents) = try ssh.capture("cat \(remotePath.escapeSpaces())")
         return contents
     }
     

@@ -12,28 +12,28 @@ import Foundation
 
 func createFile(at path: String) {
     safetyNet(path: path) {
-        shell("touch \(path)")
+        shell("touch \(path.escapeSpaces())")
     }
 }
 
 
 func removeFile(at path: String) {
     safetyNet(path: path) {
-        shell("rm \(path)")
+        shell("rm \(path.escapeSpaces())")
     }
 }
 
 
 func createDir(at path: String) {
     safetyNet(path: path) {
-        shell("mkdir \(path)")
+        shell("mkdir \(path.escapeSpaces())")
     }
 }
 
 
 func removeDir(at path: String) {
     safetyNet(path: path) {
-        shell("rm -rf \(path)")
+        shell("rm -rf \(path.escapeSpaces())")
     }
     
 }
@@ -41,7 +41,7 @@ func removeDir(at path: String) {
 
 func moveItem(from src: String, to dst: String) {
     safetyNet(path: src, dst) {
-        shell("mv \(src) \(dst)")
+        shell("mv \(src.escapeSpaces()) \(dst.escapeSpaces())")
     }
 }
 
