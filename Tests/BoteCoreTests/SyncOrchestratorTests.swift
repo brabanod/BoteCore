@@ -121,9 +121,9 @@ class SyncOrchestratorTests: XCTestCase {
         
         // Add files/dirs
         createFile(at: testsBasepath + #"/simpleFile"#)
-        createFile(at: testsBasepath + #"/file\ with\ spaces.txt"#)
-        createDir(at: testsBasepath + #"/dir\ with\ space"#)
-        createFile(at: testsBasepath + #"/dir\ with\ space/fileInDir"#)
+        createFile(at: testsBasepath + #"/file with spaces.txt"#)
+        createDir(at: testsBasepath + #"/dir with space"#)
+        createFile(at: testsBasepath + #"/dir with space/fileInDir"#)
         
         let uploadExpectation = XCTestExpectation(description: "All local files should be uploaded to remote")
         
@@ -131,9 +131,9 @@ class SyncOrchestratorTests: XCTestCase {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
             do {
                 XCTAssertTrue(try self.checkIfExists(path: SFTPServer.path + #"/simpleFile"#, isDir: false), "Failed for " + #"/simpleFile"#)
-                XCTAssertTrue(try self.checkIfExists(path: SFTPServer.path + #"/file\ with\ spaces.txt"#, isDir: false), "Failed for " + #"/file\ with\ spaces.txt"#)
-                XCTAssertTrue(try self.checkIfExists(path: SFTPServer.path + #"/dir\ with\ space"#, isDir: true), "Failed for " + #"/dir\ with\ space"#)
-                XCTAssertTrue(try self.checkIfExists(path: SFTPServer.path + #"/dir\ with\ space/fileInDir"#, isDir: false), "Failed for " + #"/dir\ with\ space/fileInDir"#)
+                XCTAssertTrue(try self.checkIfExists(path: SFTPServer.path + #"/file with spaces.txt"#, isDir: false), "Failed for " + #"/file with spaces.txt"#)
+                XCTAssertTrue(try self.checkIfExists(path: SFTPServer.path + #"/dir with space"#, isDir: true), "Failed for " + #"/dir with space"#)
+                XCTAssertTrue(try self.checkIfExists(path: SFTPServer.path + #"/dir with space/fileInDir"#, isDir: false), "Failed for " + #"/dir with space/fileInDir"#)
                 uploadExpectation.fulfill()
             } catch _ { }
         }
@@ -142,17 +142,17 @@ class SyncOrchestratorTests: XCTestCase {
         
         // Remove files/dirs
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            removeDir(at: testsBasepath + #"/dir\ with\ space"#)
-            removeFile(at: testsBasepath + #"/file\ with\ spaces.txt"#)
+            removeDir(at: testsBasepath + #"/dir with space"#)
+            removeFile(at: testsBasepath + #"/file with spaces.txt"#)
         }
         
         // Check if removed files/dirs are removed remotely
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
             do {
                 XCTAssertTrue(try self.checkIfExists(path: SFTPServer.path + #"/simpleFile"#, isDir: false), "Failed for " + #"/simpleFile"#)
-                XCTAssertTrue(try self.checkIfNotExists(path: SFTPServer.path + #"/file\ with\ spaces.txt"#, isDir: false), "Failed for " + #"/file\ with\ spaces.txt"#)
-                XCTAssertTrue(try self.checkIfNotExists(path: SFTPServer.path + #"/dir\ with\ space"#, isDir: true), "Failed for " + #"/dir\ with\ space"#)
-                XCTAssertTrue(try self.checkIfNotExists(path: SFTPServer.path + #"/dir\ with\ space/fileInDir"#, isDir: false), "Failed for " + #"/dir\ with\ space/fileInDir"#)
+                XCTAssertTrue(try self.checkIfNotExists(path: SFTPServer.path + #"/file with spaces.txt"#, isDir: false), "Failed for " + #"/file with spaces.txt"#)
+                XCTAssertTrue(try self.checkIfNotExists(path: SFTPServer.path + #"/dir with space"#, isDir: true), "Failed for " + #"/dir with space"#)
+                XCTAssertTrue(try self.checkIfNotExists(path: SFTPServer.path + #"/dir with space/fileInDir"#, isDir: false), "Failed for " + #"/dir with space/fileInDir"#)
                 removeExpectation.fulfill()
             } catch _ { }
         }
@@ -368,6 +368,52 @@ class SyncOrchestratorTests: XCTestCase {
 //    }
     
     
+    func testOverrideConfiguration() throws {
+        var baseConfiguration = Configuration(from: LocalConnection(path: "f1\(testsBasepath)"), to: try SFTPConnection(path: "t1\(testsBasepath)", host: "t1\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "t1\(SFTPServer.user)", authentication: .password(value: "t1\(SFTPServer.password)")))
+        
+        let cm = ConfigurationManager(())!
+        let so = SyncOrchestrator()
+        
+        // Register synchronization
+        let syncItem = try so.register(configuration: baseConfiguration)
+        try so.startSynchronizing(for: syncItem) { _,_ in }
+        
+        XCTAssertNotNil(try? KeychainGuard.getItem(user: "t1\(SFTPServer.user)", server: "t1\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t2\(SFTPServer.user)", server: "t2\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t3\(SFTPServer.user)", server: "t3\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t4\(SFTPServer.user)", server: "t4\(SFTPServer.host)"))
+        
+        // Update Configuration first time
+        try cm.update(&baseConfiguration, for: syncItem.configuration.id)
+        syncItem.configuration = Configuration(from: LocalConnection(path: "f2\(testsBasepath)"), to: try SFTPConnection(path: "t2\(testsBasepath)", host: "t2\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "t2\(SFTPServer.user)", authentication: .password(value: "t2\(SFTPServer.password)")))
+        
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t1\(SFTPServer.user)", server: "t1\(SFTPServer.host)"))
+        XCTAssertNotNil(try? KeychainGuard.getItem(user: "t2\(SFTPServer.user)", server: "t2\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t3\(SFTPServer.user)", server: "t3\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t4\(SFTPServer.user)", server: "t4\(SFTPServer.host)"))
+        
+        // Update Configuration second time
+        try cm.update(&baseConfiguration, for: syncItem.configuration.id)
+        syncItem.configuration = Configuration(from: LocalConnection(path: "f3\(testsBasepath)"), to: try SFTPConnection(path: "t3\(testsBasepath)", host: "t3\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "t3\(SFTPServer.user)", authentication: .password(value: "t3\(SFTPServer.password)")))
+        
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t1\(SFTPServer.user)", server: "t1\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t2\(SFTPServer.user)", server: "t2\(SFTPServer.host)"))
+        XCTAssertNotNil(try? KeychainGuard.getItem(user: "t3\(SFTPServer.user)", server: "t3\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t4\(SFTPServer.user)", server: "t4\(SFTPServer.host)"))
+        
+        // Update Configuration third time        
+        try cm.update(&baseConfiguration, for: syncItem.configuration.id)
+        syncItem.configuration = Configuration(from: LocalConnection(path: "f4\(testsBasepath)"), to: try SFTPConnection(path: "t4\(testsBasepath)", host: "t4\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "t4\(SFTPServer.user)", authentication: .password(value: "t4\(SFTPServer.password)")))
+        
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t1\(SFTPServer.user)", server: "t1\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t2\(SFTPServer.user)", server: "t2\(SFTPServer.host)"))
+        XCTAssertNil(try? KeychainGuard.getItem(user: "t3\(SFTPServer.user)", server: "t3\(SFTPServer.host)"))
+        XCTAssertNotNil(try? KeychainGuard.getItem(user: "t4\(SFTPServer.user)", server: "t4\(SFTPServer.host)"))
+        
+        try KeychainGuard.removeItem(user: "t4\(SFTPServer.user)", server: "t4\(SFTPServer.host)")
+    }
+    
+    
     
     
     // MARK: - Helper Methods
@@ -383,7 +429,7 @@ class SyncOrchestratorTests: XCTestCase {
     func checkIfExists(path: String, isDir: Bool) throws -> Bool {
         let ssh = defaultTransferHandler!.sshSession!
         let option = isDir ? "-d" : "-f"
-        let (status, contents) = try ssh.capture("if test \(option) \(path); then echo \"exists\"; fi")
+        let (status, contents) = try ssh.capture("if test \(option) \(path.escapeSpaces()); then echo \"exists\"; fi")
         if status == 0, contents.components(separatedBy: "\n")[0] == "exists" {
             return true
         } else {
@@ -402,7 +448,7 @@ class SyncOrchestratorTests: XCTestCase {
     func checkIfNotExists(path: String, isDir: Bool) throws -> Bool {
         let ssh = defaultTransferHandler!.sshSession!
         let option = isDir ? "-d" : "-f"
-        let (status, contents) = try ssh.capture("if test ! \(option) \(path); then echo \"removed\"; fi")
+        let (status, contents) = try ssh.capture("if test ! \(option) \(path.escapeSpaces()); then echo \"removed\"; fi")
         if status == 0, contents.components(separatedBy: "\n")[0] == "removed" {
             return true
         } else {

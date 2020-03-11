@@ -230,7 +230,12 @@ public class SyncOrchestrator {
      */
     private func deactivate(syncItem item: SyncItem) {
         item.fileWatcherSubscription?.cancel()
+        item.fileWatcherSubscription = nil
+        item.statusSubscription?.cancel()
+        item.statusSubscription = nil
         item.status = .inactive
+        item.transferHandler = nil
+        item.fileWatcher = nil
     }
     
     
