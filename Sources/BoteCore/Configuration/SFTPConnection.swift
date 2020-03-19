@@ -69,6 +69,27 @@ public class SFTPConnection: Connection {
     }
     
     
+    public func isEqual(to: Connection) -> Bool {
+        if to.type == self.type,
+            let con = to as? SFTPConnection,
+            self.path == con.path,
+            self.port == con.port,
+            self.user == con.user,
+            self.host == con.host,
+            self.getKeyPath() == con.getKeyPath() {
+            let selfPW = try? self.getPassword()
+            let conPW = try? con.getPassword()
+            if selfPW == conPW {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+    
+    
     
     
     // MARK: - Getters

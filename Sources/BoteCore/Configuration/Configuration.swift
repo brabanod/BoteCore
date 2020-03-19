@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Configuration: Codable {
+public class Configuration: Codable, Equatable {
     public var name: String = ""
     public var from: Connection
     public var to: Connection
@@ -83,5 +83,22 @@ public class Configuration: Codable {
         try container.encode(self.toType, forKey: .toType)
         let toContainer = container.superEncoder(forKey: .to)
         try to.encode(to: toContainer)
+    }
+    
+    
+    
+    
+    // MARK: - Equatable
+    
+    public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
+        if lhs.name == rhs.name,
+            lhs.fromType == rhs.fromType,
+            lhs.toType == rhs.toType,
+            lhs.from.isEqual(to: rhs.from),
+            lhs.to.isEqual(to: rhs.to) {
+            return true
+        } else {
+            return false
+        }
     }
 }

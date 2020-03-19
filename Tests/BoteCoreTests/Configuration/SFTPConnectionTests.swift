@@ -108,6 +108,37 @@ class SFTPConnectionTests: XCTestCase {
     
     
     
+    // MARK: - Protocol
+    
+    func testIsEqualTo() throws {
+        let basePW = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+        let samePW = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: SFTPServer.password))
+        let otherPW = try SFTPConnection(path: SFTPServer.path, host: "other\(SFTPServer.host)", port: SFTPServer.port, user: SFTPServer.user, authentication: .password(value: "other\(SFTPServer.password)"))
+        let baseKey = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: SFTPServer.keypath))
+        let sameKey = try SFTPConnection(path: SFTPServer.path, host: SFTPServer.host, port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: SFTPServer.keypath))
+        let otherKey = try SFTPConnection(path: SFTPServer.path, host: "other\(SFTPServer.host)", port: SFTPServer.port, user: SFTPServer.user, authentication: .key(path: "other\(SFTPServer.keypath)"))
+        let otherCon = LocalConnection(path: testsBasepath)
+        
+        XCTAssertTrue(basePW.isEqual(to: basePW))
+        XCTAssertTrue(basePW.isEqual(to: samePW))
+        XCTAssertTrue(samePW.isEqual(to: basePW))
+        
+        XCTAssertFalse(basePW.isEqual(to: otherPW))
+        XCTAssertFalse(basePW.isEqual(to: baseKey))
+        XCTAssertFalse(basePW.isEqual(to: otherCon))
+        
+        XCTAssertTrue(baseKey.isEqual(to: baseKey))
+        XCTAssertTrue(baseKey.isEqual(to: sameKey))
+        XCTAssertTrue(sameKey.isEqual(to: baseKey))
+        
+        XCTAssertFalse(baseKey.isEqual(to: otherKey))
+        XCTAssertFalse(baseKey.isEqual(to: basePW))
+        XCTAssertFalse(baseKey.isEqual(to: otherCon))
+    }
+    
+    
+    
+    
     // MARK: - Getters
     
     func testGetPassword() throws {

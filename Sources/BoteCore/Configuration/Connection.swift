@@ -16,6 +16,12 @@ public protocol Connection: Codable {
      This method gets called, when a configuration is deleted. Custom deletion operations for a specific `Connection` implementation can be performed in this method.
      */
     func remove()
+    
+    
+    /**
+     Compares a `Connection` object to another one and returns `true` if they are equal, `false` if not.
+     */
+    func isEqual(to: Connection) -> Bool
 }
 
 

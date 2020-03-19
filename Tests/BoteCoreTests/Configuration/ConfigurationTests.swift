@@ -96,4 +96,26 @@ class ConfigurationTests: XCTestCase {
         // Tests if id is explicit and always the same on one object
         // Already done in encoding/decoding tests
     }
+    
+    func testEquatable() throws {
+        let f1 = LocalConnection(path: "f1\(testsBasepath)")
+        let t1 = try SFTPConnection(path: "t1\(testsBasepath)", host: "t1\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 1, user: "t1\(SFTPServer.user)", authentication: .key(path: "t1\(SFTPServer.keypath)"))
+        
+        let f2 = try SFTPConnection(path: "f2\(testsBasepath)", host: "f2\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 2, user: "f2\(SFTPServer.user)", authentication: .key(path: "f2\(SFTPServer.keypath)"))
+        let t2 = try SFTPConnection(path: "t2\(testsBasepath)", host: "t2\(SFTPServer.host)", port: (SFTPServer.port ?? 0) + 3, user: "t2\(SFTPServer.user)", authentication: .key(path: "t2\(SFTPServer.keypath)"))
+        
+        let base = Configuration(from: f1, to: t1, name: "nameA")
+        let same = Configuration(from: f1, to: t1, name: "nameA")
+        let otherName = Configuration(from: f1, to: t1, name: "nameB")
+        let otherTo = Configuration(from: f1, to: t2, name: "nameA")
+        let otherFrom = Configuration(from: f2, to: t1, name: "nameA")
+        let other = Configuration(from: f2, to: t2, name: "nameA")
+        
+        XCTAssertTrue(base == same)
+        XCTAssertTrue(same == base)
+        XCTAssertFalse(base == otherName)
+        XCTAssertFalse(base == otherTo)
+        XCTAssertFalse(base == otherFrom)
+        XCTAssertFalse(base == other)
+    }
 }

@@ -18,4 +18,14 @@ public class LocalConnection: Connection {
     public init(path: String) {
         self.path = path
     }
+    
+    public func isEqual(to: Connection) -> Bool {
+        if to.type == self.type,
+            let con = to as? LocalConnection,
+            self.path == con.path {
+            return true
+        } else {
+            return false
+        }
+    }
 }
