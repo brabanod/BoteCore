@@ -4,7 +4,7 @@
 
 ## Usage
 
-This library has to main components, which should be used by any application using `BoteCore`. These are `ConfigurationManager` and `SyncOrchestrator`. Both components work independet from each other, but can be used together and are also designed to be used together.
+This library has two main components, which should be used by any application using `BoteCore`. These are `ConfigurationManager` and `SyncOrchestrator`. Both components work independet from each other, but can be used together and are also designed to be used together.
 
 The `ConfigurationManager` handles saving and loading synchronization configurations to/from the UserDefaults, thus persisting them when the program is closed. A configuration is saved in a `Configuration` object.
 
